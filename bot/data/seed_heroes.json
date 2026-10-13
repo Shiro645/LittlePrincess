@@ -1,0 +1,1199 @@
+[
+ {
+  "key": "119",
+  "atr": "eun",
+  "name": "Eunha",
+  "role": "ranged",
+  "element": "basic",
+  "rarity": "3",
+  "otherStats": "Crit Hit Chance 4% / +5% Shield increase on battle start",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2328",
+     "hp": "94000",
+     "def": "451",
+     "reduc": "",
+     "heal": "1250"
+    },
+    "party": "Ranged Damage +50%",
+    "na": {
+     "title": "Dokkaebi Mischief",
+     "description": "**Gloomy Gales**: Sucks up nearby enemies to inflict ranged damage. If the Atk hits 6 times, heal all allies' HP. / **Mask Mastery**: Throws a returning mask to inflict ranged damage to enemies. On hit, mark targets with a Dokkaebi symbol to reduce Atk by 10% for 6 seconds."
+    },
+    "ability": {
+     "title": "Prodigious Magical Energy",
+     "description": "On Gloomy Gales' hit, reduce the enemy's Def by 20% for 3 seconds. On Gloomy Gales' hit, increases party members' Atk by 2% for 3 seconds. This effect overlaps up to 10 times."
+    },
+    "leader": null,
+    "chain": {
+     "title": "Shapeshifting",
+     "description": "Shapeshifts into an object to inflict 500% of DPS as melee damage.",
+     "stun": "downed-airborne"
+    },
+    "weapon": {
+     "name": "Infinite Change",
+     "effect": "If the duration of Gloomy Gales is maintained for 3 seconds, increase Crit Hit Multiplier of Basic type Heroes by 50% for 5 seconds.",
+     "type": "basket",
+     "dmg": "5795",
+     "atk": "1407",
+     "stats": "Heal 2376 / Crit Hit Chance 3%",
+     "options": "HP +22% / Def +20% / Skill Damage +16% / Weapon Skill Regen Speed +18%"
+    },
+    "skill": {
+     "title": "Spirit Gun",
+     "description": "Gathers and launches magical energy to inflict ranged damage to enemies, puts them in a downed state.",
+     "stun": "downed",
+     "level": "6",
+     "dmg": "300%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-plitvice",
+  "atr": "",
+  "name": "Plitvice",
+  "role": "warrior",
+  "element": "fire",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2450",
+     "hp": "88000",
+     "def": "430",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Fire type Atk +30%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Burning Strike",
+     "description": "Inflicts 480% of DPS as damage.",
+     "stun": "airborne-downed"
+    },
+    "weapon": {
+     "type": "sword_2h",
+     "name": "Blazing Blade",
+     "atk": "1450",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Flame Slash",
+     "description": "Données provisoires (approximatives).",
+     "stun": "airborne",
+     "dmg": "320%",
+     "cd": "12"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-lahn",
+  "atr": "",
+  "name": "Lahn",
+  "role": "warrior",
+  "element": "earth",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2380",
+     "hp": "92000",
+     "def": "450",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Atk +15%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Charging Punch",
+     "description": "Inflicts 460% of DPS as damage.",
+     "stun": "injured-airborne"
+    },
+    "weapon": {
+     "type": "gauntlet",
+     "name": "Fist of Tempest",
+     "atk": "1420",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Tiger Fang",
+     "description": "Données provisoires (approximatives).",
+     "stun": "injured",
+     "dmg": "300%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-lupina",
+  "atr": "",
+  "name": "Lupina",
+  "role": "warrior",
+  "element": "dark",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2420",
+     "hp": "86000",
+     "def": "420",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Dark type Atk +30%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Lunar Rush",
+     "description": "Inflicts 500% of DPS as damage.",
+     "stun": "downed-injured"
+    },
+    "weapon": {
+     "type": "claw",
+     "name": "Fang of the Moon",
+     "atk": "1430",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Wolf Frenzy",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "310%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-marina",
+  "atr": "",
+  "name": "Marina",
+  "role": "tank",
+  "element": "water",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1950",
+     "hp": "120000",
+     "def": "560",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "HP +20% / Def +20%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Anchor Drop",
+     "description": "Inflicts 420% of DPS as damage.",
+     "stun": "airborne-downed"
+    },
+    "weapon": {
+     "type": "sword_1h",
+     "name": "Captain's Cutlass",
+     "atk": "1350",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Tidal Wave",
+     "description": "Données provisoires (approximatives).",
+     "stun": "airborne",
+     "dmg": "260%",
+     "cd": "13"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-future-princess",
+  "atr": "",
+  "name": "Future Princess",
+  "role": "ranged",
+  "element": "light",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2500",
+     "hp": "82000",
+     "def": "400",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Light type Atk +30%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Royal Shot",
+     "description": "Inflicts 500% of DPS as damage.",
+     "stun": "injured-downed"
+    },
+    "weapon": {
+     "type": "rifle",
+     "name": "Future Rifle",
+     "atk": "1460",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Princess Barrage",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "330%",
+     "cd": "12"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-nari",
+  "atr": "",
+  "name": "Nari",
+  "role": "support",
+  "element": "basic",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2050",
+     "hp": "84000",
+     "def": "410",
+     "reduc": "",
+     "heal": "1300"
+    },
+    "party": "Heal +20% / Atk +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Spirit Wave",
+     "description": "Inflicts 400% of DPS as damage.",
+     "stun": "airborne-injured"
+    },
+    "weapon": {
+     "type": "staff",
+     "name": "Spirit Fox Staff",
+     "atk": "1300",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Fox Fire",
+     "description": "Données provisoires (approximatives).",
+     "stun": "injured",
+     "dmg": "250%",
+     "cd": "10"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-mayreel",
+  "atr": "",
+  "name": "Mayreel",
+  "role": "ranged",
+  "element": "earth",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2400",
+     "hp": "83000",
+     "def": "405",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Earth type Atk +30%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Nature's Arrow",
+     "description": "Inflicts 470% of DPS as damage.",
+     "stun": "downed-airborne"
+    },
+    "weapon": {
+     "type": "bow",
+     "name": "Leaf Bow",
+     "atk": "1440",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Thorn Volley",
+     "description": "Données provisoires (approximatives).",
+     "stun": "airborne",
+     "dmg": "310%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-bari",
+  "atr": "",
+  "name": "Bari",
+  "role": "ranged",
+  "element": "dark",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2460",
+     "hp": "81000",
+     "def": "395",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Skill Damage +25%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Void Blast",
+     "description": "Inflicts 480% of DPS as damage.",
+     "stun": "airborne-downed"
+    },
+    "weapon": {
+     "type": "staff",
+     "name": "Grimoire Staff",
+     "atk": "1450",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Dark Matter",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "340%",
+     "cd": "13"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-oghma",
+  "atr": "",
+  "name": "Oghma",
+  "role": "tank",
+  "element": "dark",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1900",
+     "hp": "125000",
+     "def": "580",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Def +25% / HP +15%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Crushing Guard",
+     "description": "Inflicts 400% of DPS as damage.",
+     "stun": "downed-injured"
+    },
+    "weapon": {
+     "type": "sword_1h",
+     "name": "Iron Sentinel",
+     "atk": "1320",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Heavy Slam",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "250%",
+     "cd": "13"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-miya",
+  "atr": "",
+  "name": "Miya",
+  "role": "ranged",
+  "element": "fire",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2430",
+     "hp": "80000",
+     "def": "390",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Ranged Damage +40%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Flame Burst",
+     "description": "Inflicts 470% of DPS as damage.",
+     "stun": "injured-airborne"
+    },
+    "weapon": {
+     "type": "staff",
+     "name": "Firestorm Rod",
+     "atk": "1440",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Meteor",
+     "description": "Données provisoires (approximatives).",
+     "stun": "injured",
+     "dmg": "320%",
+     "cd": "12"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-gabriel",
+  "atr": "",
+  "name": "Gabriel",
+  "role": "support",
+  "element": "light",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2100",
+     "hp": "90000",
+     "def": "430",
+     "reduc": "",
+     "heal": "1350"
+    },
+    "party": "Heal +25% / Def +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Judgement",
+     "description": "Inflicts 420% of DPS as damage.",
+     "stun": "injured-downed"
+    },
+    "weapon": {
+     "type": "staff",
+     "name": "Holy Scepter",
+     "atk": "1310",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Divine Light",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "260%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-arabelle",
+  "atr": "",
+  "name": "Arabelle",
+  "role": "warrior",
+  "element": "water",
+  "rarity": "3",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "2440",
+     "hp": "87000",
+     "def": "430",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Water type Atk +30%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Glacial Cut",
+     "description": "Inflicts 480% of DPS as damage.",
+     "stun": "airborne-injured"
+    },
+    "weapon": {
+     "type": "sword_1h",
+     "name": "Frozen Sabre",
+     "atk": "1430",
+     "stats": "Crit Hit Chance 3%",
+     "options": "Atk +10% / Skill Damage +10%",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Ice Edge",
+     "description": "Données provisoires (approximatives).",
+     "stun": "airborne",
+     "dmg": "310%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-rachel",
+  "atr": "",
+  "name": "Rachel",
+  "role": "warrior",
+  "element": "fire",
+  "rarity": "2",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1750",
+     "hp": "68000",
+     "def": "360",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Atk +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Blaze Strike",
+     "description": "Inflicts 380% of DPS as damage.",
+     "stun": "downed-airborne"
+    },
+    "weapon": {
+     "type": "sword_2h",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Fire Cleave",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "260%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-craig",
+  "atr": "",
+  "name": "Craig",
+  "role": "tank",
+  "element": "earth",
+  "rarity": "2",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1450",
+     "hp": "95000",
+     "def": "500",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Def +15%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Iron Wall",
+     "description": "Inflicts 320% of DPS as damage.",
+     "stun": "injured-downed"
+    },
+    "weapon": {
+     "type": "sword_1h",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Shield Bash",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "220%",
+     "cd": "12"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-aoba",
+  "atr": "",
+  "name": "Aoba",
+  "role": "ranged",
+  "element": "earth",
+  "rarity": "2",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1720",
+     "hp": "62000",
+     "def": "330",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Ranged Damage +20%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Gale Shot",
+     "description": "Inflicts 360% of DPS as damage.",
+     "stun": "airborne-injured"
+    },
+    "weapon": {
+     "type": "bow",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Wind Arrow",
+     "description": "Données provisoires (approximatives).",
+     "stun": "airborne",
+     "dmg": "250%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-shapira",
+  "atr": "",
+  "name": "Shapira",
+  "role": "support",
+  "element": "dark",
+  "rarity": "2",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1550",
+     "hp": "66000",
+     "def": "350",
+     "reduc": "",
+     "heal": "1100"
+    },
+    "party": "Heal +15%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Dark Pulse",
+     "description": "Inflicts 330% of DPS as damage.",
+     "stun": "downed-injured"
+    },
+    "weapon": {
+     "type": "staff",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Shadow Mend",
+     "description": "Données provisoires (approximatives).",
+     "stun": "injured",
+     "dmg": "200%",
+     "cd": "10"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-rie",
+  "atr": "",
+  "name": "Rie",
+  "role": "ranged",
+  "element": "water",
+  "rarity": "2",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1700",
+     "hp": "63000",
+     "def": "335",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Water type Atk +15%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Bubble Burst",
+     "description": "Inflicts 350% of DPS as damage.",
+     "stun": "injured-downed"
+    },
+    "weapon": {
+     "type": "rifle",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Aqua Shot",
+     "description": "Données provisoires (approximatives).",
+     "stun": "injured",
+     "dmg": "250%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "1",
+  "atr": "1/linda",
+  "name": "Linda",
+  "role": "support",
+  "element": "light",
+  "rarity": "1",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1150",
+     "hp": "52000",
+     "def": "300",
+     "reduc": "",
+     "heal": "950"
+    },
+    "party": "Heal +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Spark",
+     "description": "Inflicts 280% of DPS as damage.",
+     "stun": "injured-airborne"
+    },
+    "weapon": {
+     "type": "basket",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Cheer",
+     "description": "Données provisoires (approximatives).",
+     "stun": "",
+     "dmg": "180%",
+     "cd": "10"
+    }
+   }
+  ]
+ },
+ {
+  "key": "2",
+  "atr": "1/bob",
+  "name": "Bob",
+  "role": "tank",
+  "element": "basic",
+  "rarity": "1",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1050",
+     "hp": "70000",
+     "def": "400",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Def +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Body Slam",
+     "description": "Inflicts 260% of DPS as damage.",
+     "stun": "downed-airborne"
+    },
+    "weapon": {
+     "type": "sword_1h",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Bonk",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "180%",
+     "cd": "12"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-knight",
+  "atr": "",
+  "name": "Knight",
+  "role": "warrior",
+  "element": "basic",
+  "rarity": "1",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1250",
+     "hp": "55000",
+     "def": "320",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Atk +8%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Hero's Strike",
+     "description": "Inflicts 300% of DPS as damage.",
+     "stun": "airborne-downed"
+    },
+    "weapon": {
+     "type": "sword_1h",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Guardian Slash",
+     "description": "Données provisoires (approximatives).",
+     "stun": "downed",
+     "dmg": "200%",
+     "cd": "11"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-mei",
+  "atr": "",
+  "name": "Mei",
+  "role": "ranged",
+  "element": "fire",
+  "rarity": "1",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1200",
+     "hp": "48000",
+     "def": "280",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Fire type Atk +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Hot Shot",
+     "description": "Inflicts 280% of DPS as damage.",
+     "stun": "downed-airborne"
+    },
+    "weapon": {
+     "type": "rifle",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Spark Shot",
+     "description": "Données provisoires (approximatives).",
+     "stun": "airborne",
+     "dmg": "190%",
+     "cd": "10"
+    }
+   }
+  ]
+ },
+ {
+  "key": "seed-hoshida",
+  "atr": "",
+  "name": "Hoshida",
+  "role": "warrior",
+  "element": "water",
+  "rarity": "1",
+  "_seed": true,
+  "otherStats": "",
+  "variants": [
+   {
+    "version": "Base",
+    "stats": {
+     "atk": "1220",
+     "hp": "53000",
+     "def": "310",
+     "reduc": "",
+     "heal": "0"
+    },
+    "party": "Water type Atk +10%",
+    "na": {
+     "title": "",
+     "description": ""
+    },
+    "ability": {
+     "title": "",
+     "description": ""
+    },
+    "leader": null,
+    "chain": {
+     "title": "Splash",
+     "description": "Inflicts 270% of DPS as damage.",
+     "stun": "airborne-injured"
+    },
+    "weapon": {
+     "type": "sword_2h",
+     "name": "",
+     "atk": "",
+     "stats": "",
+     "options": "",
+     "effect": ""
+    },
+    "skill": {
+     "title": "Wave Cut",
+     "description": "Données provisoires (approximatives).",
+     "stun": "injured",
+     "dmg": "190%",
+     "cd": "11"
+    }
+   }
+  ]
+ }
+]
