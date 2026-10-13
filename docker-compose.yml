@@ -1,0 +1,55 @@
+# LittlePrincess — bot Discord Guardian Tales
+#
+#   1. cp .env.example .env   puis remplis les valeurs
+#   2. docker compose up -d
+#   3. docker compose logs -f bot
+#
+# Dossiers créés à côté de ce fichier :
+#   ./config  -> config.yaml (toutes les valeurs du jeu, créé au 1er démarrage)
+#   ./data    -> base de données SQLite + cache des héros (à sauvegarder)
+
+services:
+  bot:
+    image: ghcr.io/shiro645/littleprincess:latest
+    # Pour construire l'image toi-même depuis le code au lieu de la télécharger,
+    # commente la ligne "image" ci-dessus et décommente la ligne suivante :
+    # build: .
+    container_name: littleprincess
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TZ: Europe/Paris
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+    labels:
+      # Seul ce container est mis à jour par Watchtower
+      - com.centurylinklabs.watchtower.enable=true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Met à jour le bot quand on lance /bot update sur Discord
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: littleprincess-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: Europe/Paris
+      # Mise à jour uniquement sur demande (API HTTP), pas de vérification périodique
+      WATCHTOWER_HTTP_API_ENDPOINTS: "update"
+      WATCHTOWER_HTTP_API_UPDATE: "true"        # ancien nom de l'option, gardé pour compatibilité
+      WATCHTOWER_HTTP_API_TOKEN: ${WATCHTOWER_TOKEN}
+      # Ne surveille que les containers qui ont le label watchtower.enable=true
+      WATCHTOWER_LABEL_ENABLE: "true"
+      # Supprime l'ancienne image après mise à jour
+      WATCHTOWER_CLEANUP: "true"
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
