@@ -1,0 +1,337 @@
+{
+  "general": {
+    "timezone": "Europe/Paris",
+    "bot_name": "LittlePrincess",
+    "embed_color": "#F5A9D0"
+  },
+  "channels": {
+    "announcements": 0,
+    "admin": 0,
+    "level_up": 0,
+    "achievements": 0,
+    "boss": 0,
+    "wordle": 0,
+    "allowed": [],
+    "xp_excluded": []
+  },
+  "roles": {
+    "staff": [],
+    "boss_ping": 0
+  },
+  "gamedata": {
+    "api_base_url": "https://gtales.top",
+    "sync_interval_days": 7,
+    "request_delay_seconds": 0.4,
+    "variant": "Base",
+    "exclude_heroes": [],
+    "include_only": [],
+    "default_weapon_by_role": {"warrior": "sword_1h", "tank": "sword_1h", "ranged": "bow", "support": "staff"}
+  },
+  "economy": {
+    "start_gems": 3000,
+    "start_gold": 5000
+  },
+  "gacha": {
+    "cost_single": 300,
+    "cost_ten": 2700,
+    "hero_rates": {"3": 2.75, "2": 19.0, "1": 78.25},
+    "weapon_rates": {"5": 3.0, "4": 9.0, "3": 16.0, "2": 27.0, "1": 45.0},
+    "featured_share": 0.5,
+    "featured_rotation": [],
+    "featured_change_weekday": 0,
+    "featured_change_hour": 0,
+    "pity_hero": 80,
+    "pity_weapon": 80,
+    "ten_pull_min_hero_rarity": 2,
+    "ten_pull_min_weapon_rarity": 3,
+    "duplicate_conversion": {
+      "hero": {"1": {"gems": 5, "gold": 500}, "2": {"gems": 15, "gold": 2000}, "3": {"gems": 50, "gold": 10000}},
+      "weapon": {
+        "1": {"gems": 2, "gold": 200},
+        "2": {"gems": 5, "gold": 500},
+        "3": {"gems": 10, "gold": 1500},
+        "4": {"gems": 20, "gold": 4000},
+        "5": {"gems": 50, "gold": 10000}
+      }
+    }
+  },
+  "progression": {
+    "star_max": 5,
+    "max_level_by_stars": {"1": 20, "2": 40, "3": 60, "4": 80, "5": 100},
+    "level_factor_min": 0.2,
+    "level_reference": 100,
+    "star_factor": {"1": 0.6, "2": 0.7, "3": 0.8, "4": 0.9, "5": 1.0},
+    "hero_level_cost": {"base": 50, "mult": 5, "exponent": 1.4},
+    "weapon_level_cost": {"base": 25, "mult": 3, "exponent": 1.4}
+  },
+  "weapons": {
+    "generic_atk": {"1": 500, "2": 700, "3": 950, "4": 1200},
+    "exclusive_bonus": {"atk_pct": 15, "crit_chance": 5},
+    "type_names": {
+      "sword_1h": "Épée à une main",
+      "sword_2h": "Épée à deux mains",
+      "rifle": "Fusil",
+      "bow": "Arc",
+      "basket": "Panier",
+      "staff": "Bâton",
+      "gauntlet": "Gantelet",
+      "claw": "Griffe"
+    },
+    "generic_names": {
+      "sword_1h": ["Épée rouillée", "Épée de garde", "Lame du chevalier", "Épée de Kanterbury"],
+      "sword_2h": ["Espadon émoussé", "Claymore", "Fendoir du vétéran", "Grande épée runique"],
+      "rifle": ["Pistolet de fortune", "Fusil de chasse", "Carabine de précision", "Fusil gravé"],
+      "bow": ["Arc court", "Arc long", "Arc de l'éclaireur", "Arc du vent"],
+      "basket": ["Panier en osier", "Panier de pique-nique", "Panier enchanté", "Panier des fées"],
+      "staff": ["Bâton noueux", "Bâton d'apprenti", "Sceptre arcanique", "Bâton de l'archimage"],
+      "gauntlet": ["Gants de cuir", "Gantelets de fer", "Poings d'acier", "Gantelets du titan"],
+      "claw": ["Griffes usées", "Griffes acérées", "Griffes du prédateur", "Griffes de l'ombre"]
+    }
+  },
+  "combat": {
+    "team_size": 4,
+    "element_advantage": 1.3,
+    "element_disadvantage": 0.7,
+    "element_chart": {
+      "fire": ["earth"],
+      "earth": ["water"],
+      "water": ["fire"],
+      "light": ["dark"],
+      "dark": ["light"],
+      "basic": []
+    },
+    "def_constant": 1000,
+    "base_crit_chance": 5,
+    "base_crit_multiplier": 1.5,
+    "damage_variance": 0.05,
+    "normal_attack_multiplier": 1.0,
+    "default_skill_multiplier": 2.5,
+    "seconds_per_turn": 4,
+    "min_skill_cooldown_turns": 2,
+    "initial_skill_cooldown": "random",
+    "default_chain_multiplier": 3.0,
+    "chain_combo_bonus": 0.1,
+    "cc_skip_chance": 0.3,
+    "tank_taunt_chance": 0.6,
+    "support_heal_threshold": 0.6,
+    "heal_multiplier": 6.0,
+    "leader_party_buff_multiplier": 1.5,
+    "focus_attack_multiplier": 1.3,
+    "guard_reduction": 0.5,
+    "hp_multiplier": {"duel": 0.5, "boss": 1.0, "dummy": 1.0},
+    "max_rounds_duel": 30
+  },
+  "leveling": {
+    "message_xp_min": 15,
+    "message_xp_max": 25,
+    "message_cooldown_seconds": 60,
+    "message_gold": 5,
+    "reaction_xp": 3,
+    "reaction_cooldown_seconds": 30,
+    "reaction_daily_cap": 60,
+    "xp_curve": {"a": 5, "b": 50, "c": 100},
+    "reward_per_level": {"gems": 100, "gold": 1000},
+    "milestone_every": 5,
+    "milestone_reward": {"gems": 500, "gold": 5000},
+    "level_roles": {},
+    "keep_previous_roles": false,
+    "titles_by_level": {
+      "1": "Novice",
+      "5": "Aventurier",
+      "10": "Gardien",
+      "20": "Chevalier de Kanterbury",
+      "30": "Champion",
+      "50": "Héros légendaire",
+      "75": "Gardien éternel"
+    },
+    "minigame_xp": {"wordle_win": 50, "duel": 20, "boss_participation": 100, "dummy": 10}
+  },
+  "daily": {
+    "reset_hour": 0,
+    "rewards": [
+      {"gems": 100, "gold": 1500},
+      {"gems": 100, "gold": 1500},
+      {"gems": 150, "gold": 2000},
+      {"gems": 150, "gold": 2000},
+      {"gems": 200, "gold": 2500},
+      {"gems": 200, "gold": 2500},
+      {"gems": 600, "gold": 5000}
+    ],
+    "streak_cycle_bonus_pct": 10,
+    "streak_cycle_bonus_max_pct": 50
+  },
+  "missions": {
+    "daily_count": 3,
+    "weekly_count": 3,
+    "daily_pool": [
+      {"id": "d_msg", "type": "messages", "target": 20, "name": "Discuter (20 messages)", "reward": {"gems": 60, "gold": 800}},
+      {"id": "d_react", "type": "reactions", "target": 5, "name": "Réagir à 5 messages", "reward": {"gems": 30, "gold": 500}},
+      {"id": "d_daily", "type": "daily_claim", "target": 1, "name": "Récupérer le /daily", "reward": {"gems": 30, "gold": 500}},
+      {"id": "d_summon", "type": "summon", "target": 1, "name": "Faire 1 invocation", "reward": {"gems": 50, "gold": 500}},
+      {"id": "d_wordle", "type": "wordle_play", "target": 1, "name": "Jouer au wordle du jour", "reward": {"gems": 50, "gold": 800}},
+      {"id": "d_dummy", "type": "dummy", "target": 1, "name": "Tester tes dégâts sur le dummy", "reward": {"gems": 40, "gold": 800}},
+      {"id": "d_level", "type": "hero_level_up", "target": 1, "name": "Améliorer un héros", "reward": {"gems": 40, "gold": 500}},
+      {"id": "d_duel", "type": "duel", "target": 1, "name": "Faire un duel au colisée", "reward": {"gems": 60, "gold": 1000}}
+    ],
+    "weekly_pool": [
+      {"id": "w_msg", "type": "messages", "target": 200, "name": "Discuter (200 messages)", "reward": {"gems": 400, "gold": 6000}},
+      {"id": "w_boss", "type": "boss_participation", "target": 1, "name": "Participer au boss du samedi", "reward": {"gems": 500, "gold": 8000}},
+      {"id": "w_summon", "type": "summon", "target": 20, "name": "Faire 20 invocations", "reward": {"gems": 300, "gold": 5000}},
+      {"id": "w_wordle", "type": "wordle_win", "target": 5, "name": "Gagner 5 wordles", "reward": {"gems": 400, "gold": 6000}},
+      {"id": "w_duelwin", "type": "duel_win", "target": 3, "name": "Gagner 3 duels", "reward": {"gems": 400, "gold": 6000}},
+      {"id": "w_level", "type": "hero_level_up", "target": 30, "name": "Monter 30 niveaux de héros", "reward": {"gems": 300, "gold": 4000}}
+    ]
+  },
+  "wordle": {
+    "max_attempts": 8,
+    "rewards": [
+      {"gems": 200, "gold": 3000},
+      {"gems": 150, "gold": 2500},
+      {"gems": 120, "gold": 2000},
+      {"gems": 100, "gold": 1500},
+      {"gems": 80, "gold": 1200},
+      {"gems": 60, "gold": 1000},
+      {"gems": 50, "gold": 800},
+      {"gems": 40, "gold": 600}
+    ],
+    "hint_after": 4,
+    "salt": "littleprincess"
+  },
+  "colosseum": {
+    "min_bet": 0,
+    "max_bet": 3000,
+    "accept_timeout": 120,
+    "max_duels_per_day": 10
+  },
+  "dummy": {
+    "turns": 10,
+    "defense": 300,
+    "leaderboard_size": 10
+  },
+  "boss": {
+    "enabled": true,
+    "weekday": 5,
+    "hour": 18,
+    "minute": 0,
+    "join_seconds": 300,
+    "turn_seconds": 60,
+    "max_turns": 15,
+    "afk_action": "auto",
+    "use_thread": true,
+    "hp_mode": "adaptive",
+    "difficulty": 0.8,
+    "hp_per_participant": 300000,
+    "solo_end_weekday": 6,
+    "solo_end_hour": 23,
+    "solo_end_minute": 59,
+    "solo_turns": 10,
+    "rewards": {
+      "participation": {"gems": 300, "gold": 5000},
+      "rank_bonus": [{"gems": 500, "gold": 8000}, {"gems": 300, "gold": 5000}, {"gems": 200, "gold": 3000}],
+      "kill_bonus": {"gems": 400, "gold": 6000}
+    },
+    "roster": [
+      {
+        "id": "invader_commander",
+        "name": "Commandant des Envahisseurs",
+        "element": "dark",
+        "defense": 600,
+        "description": "Le chef de l'armée des Envahisseurs vient réclamer Kanterbury.",
+        "image": "",
+        "attacks": [
+          {"name": "Lame du néant", "type": "single", "hp_pct": 38, "weight": 3},
+          {"name": "Onde obscure", "type": "aoe", "hp_pct": 15, "weight": 2},
+          {"name": "Charge dévastatrice", "type": "single", "hp_pct": 28, "weight": 1, "state": "downed"}
+        ]
+      },
+      {
+        "id": "magma_slime",
+        "name": "Slime de magma géant",
+        "element": "fire",
+        "defense": 400,
+        "description": "Un slime brûlant qui fait fondre tout sur son passage.",
+        "image": "",
+        "attacks": [
+          {"name": "Éclaboussure brûlante", "type": "aoe", "hp_pct": 17, "weight": 3},
+          {"name": "Bond écrasant", "type": "single", "hp_pct": 35, "weight": 2, "state": "airborne"}
+        ]
+      },
+      {
+        "id": "forest_guardian",
+        "name": "Gardien de la forêt corrompu",
+        "element": "earth",
+        "defense": 700,
+        "description": "L'esprit de la forêt a été corrompu par les ténèbres.",
+        "image": "",
+        "attacks": [
+          {"name": "Racines piégeuses", "type": "aoe", "hp_pct": 13, "weight": 2, "state": "injured"},
+          {"name": "Coup de tronc", "type": "single", "hp_pct": 40, "weight": 3}
+        ]
+      },
+      {
+        "id": "abyssal_kraken",
+        "name": "Kraken des abysses",
+        "element": "water",
+        "defense": 500,
+        "description": "Une créature des profondeurs qui engloutit les navires.",
+        "image": "",
+        "attacks": [
+          {"name": "Raz-de-marée", "type": "aoe", "hp_pct": 16, "weight": 3},
+          {"name": "Tentacule", "type": "single", "hp_pct": 35, "weight": 2, "state": "airborne"}
+        ]
+      },
+      {
+        "id": "fallen_archangel",
+        "name": "Archange déchu",
+        "element": "light",
+        "defense": 650,
+        "description": "Un ange tombé qui juge les Gardiens indignes.",
+        "image": "",
+        "attacks": [
+          {"name": "Jugement céleste", "type": "aoe", "hp_pct": 15, "weight": 2},
+          {"name": "Lance sacrée", "type": "single", "hp_pct": 38, "weight": 3, "state": "downed"}
+        ]
+      }
+    ]
+  },
+  "shop": {
+    "items": [
+      {"id": "gems_pack", "name": "Sac de gemmes (100)", "type": "gems", "amount": 100, "price": {"gold": 10000}, "limit": 3, "limit_period": "day"},
+      {"id": "hero_ticket", "name": "Ticket d'invocation de héros", "type": "hero_ticket", "amount": 1, "price": {"gold": 25000}, "limit": 2, "limit_period": "week"},
+      {"id": "weapon_ticket", "name": "Ticket d'invocation d'arme", "type": "weapon_ticket", "amount": 1, "price": {"gold": 20000}, "limit": 2, "limit_period": "week"},
+      {"id": "star_crystal", "name": "Cristal d'éveil (+1★ héros)", "type": "star_up", "amount": 1, "price": {"gems": 6000}, "limit": 1, "limit_period": "week"}
+    ]
+  },
+  "gifts": {
+    "enabled": true,
+    "daily_cap": {"gems": 1000, "gold": 50000},
+    "min_level": 3
+  },
+  "achievements": [
+    {"id": "first_summon", "name": "Première invocation", "description": "Faire ta première invocation", "stat": "summons", "target": 1, "reward": {"gems": 100, "gold": 1000}},
+    {"id": "summons_100", "name": "Accro au gacha", "description": "Faire 100 invocations", "stat": "summons", "target": 100, "reward": {"gems": 500, "gold": 5000}},
+    {"id": "summons_500", "name": "Baleine de Kanterbury", "description": "Faire 500 invocations", "stat": "summons", "target": 500, "reward": {"gems": 1500}, "title": "Baleine"},
+    {"id": "first_3star", "name": "Étoile filante", "description": "Obtenir un héros 3★ en invocation", "stat": "three_star_pulled", "target": 1, "reward": {"gems": 300}},
+    {"id": "collect_10", "name": "Collectionneur", "description": "Posséder 10 héros différents", "stat": "heroes_owned", "target": 10, "reward": {"gems": 300, "gold": 3000}},
+    {"id": "collect_30", "name": "Grand collectionneur", "description": "Posséder 30 héros différents", "stat": "heroes_owned", "target": 30, "reward": {"gems": 1000}, "title": "Collectionneur"},
+    {"id": "hero_5star", "name": "Éveil complet", "description": "Monter un héros à 5★", "stat": "max_hero_stars", "target": 5, "reward": {"gems": 500}},
+    {"id": "hero_lv100", "name": "Au sommet", "description": "Monter un héros au niveau 100", "stat": "max_hero_level", "target": 100, "reward": {"gems": 1000}, "title": "Maître d'armes"},
+    {"id": "wordle_1", "name": "Détective", "description": "Gagner un wordle", "stat": "wordle_wins", "target": 1, "reward": {"gems": 100}},
+    {"id": "wordle_30", "name": "Encyclopédie vivante", "description": "Gagner 30 wordles", "stat": "wordle_wins", "target": 30, "reward": {"gems": 1000}, "title": "Encyclopédie"},
+    {"id": "duel_1", "name": "Premier sang", "description": "Gagner un duel", "stat": "duel_wins", "target": 1, "reward": {"gems": 100}},
+    {"id": "duel_25", "name": "Gladiateur", "description": "Gagner 25 duels", "stat": "duel_wins", "target": 25, "reward": {"gems": 1000}, "title": "Gladiateur"},
+    {"id": "boss_1", "name": "Chasseur de boss", "description": "Participer à un boss", "stat": "boss_participations", "target": 1, "reward": {"gems": 200}},
+    {"id": "boss_kill", "name": "Tueur de boss", "description": "Vaincre un boss avec la guilde", "stat": "boss_kills", "target": 1, "reward": {"gems": 500}, "title": "Tueur de boss"},
+    {"id": "dummy_1m", "name": "Frappe lourde", "description": "Infliger 1 000 000 de dégâts au dummy", "stat": "best_dummy", "target": 1000000, "reward": {"gems": 500}},
+    {"id": "level_10", "name": "Membre actif", "description": "Atteindre le niveau 10", "stat": "level", "target": 10, "reward": {"gems": 300}},
+    {"id": "streak_7", "name": "Assidu", "description": "Récupérer le /daily 7 jours de suite", "stat": "best_streak", "target": 7, "reward": {"gems": 300}},
+    {"id": "streak_30", "name": "Inarrêtable", "description": "Récupérer le /daily 30 jours de suite", "stat": "best_streak", "target": 30, "reward": {"gems": 1500}, "title": "Inarrêtable"},
+    {"id": "gift_1", "name": "Généreux", "description": "Faire un don à un membre", "stat": "gifts_sent", "target": 1, "reward": {"gold": 2000}}
+  ],
+  "update": {
+    "repository": "Shiro645/LittlePrincess",
+    "branch": "main",
+    "check_interval_hours": 24,
+    "watchtower_url": "http://watchtower:8080"
+  }
+}

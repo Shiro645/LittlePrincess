@@ -15,7 +15,7 @@ progression par l'activité, wordle de héros, duels au colisée, boss du samedi
 3. [Obtenir le token de l'API gtales.top](#2-obtenir-le-token-de-lapi-gtalestop)
 4. [Publier l'image Docker](#3-publier-limage-docker-github)
 5. [Installer le bot sur le NAS](#4-installer-le-bot-sur-le-nas)
-6. [Configurer le jeu](#5-configurer-le-jeu-configconfigyaml)
+6. [Configurer le jeu](#5-configurer-le-jeu-configjson--config)
 7. [Mettre à jour le bot](#6-mettre-à-jour-le-bot-bot-update)
 8. [Commandes](#commandes)
 9. [Règles du jeu](#règles-du-jeu)
@@ -118,7 +118,7 @@ Commandes utiles :
 |---|---|
 | Arrêter | `docker compose down` |
 | Redémarrer (après modif de `.env`) | `docker compose up -d` |
-| Redémarrer (après modif de `config.yaml`) | `docker compose restart bot` ou `/bot recharger` sur Discord |
+| Après une modif de `config.json` à la main | `/bot recharger` sur Discord (ou `docker compose restart bot`) |
 | Mettre à jour à la main | `docker compose pull && docker compose up -d` |
 
 ### Construire l'image soi-même (sans GitHub)
@@ -126,31 +126,41 @@ Commandes utiles :
 Clone le dépôt sur le NAS, puis dans `docker-compose.yml` remplace `image: …` par `build: .` et lance
 `docker compose up -d --build`. (`/bot update` ne fonctionne alors pas : mets à jour avec `git pull` + la même commande.)
 
-## 5. Configurer le jeu (`config/config.yaml`)
+## 5. Configurer le jeu (`config.json` + `/config`)
 
-Au premier démarrage, le bot crée `config/config.yaml` avec **toutes les valeurs du jeu**, commentées en français :
-taux, coûts, pitié, XP, récompenses, missions, boss, boutique, succès… Après une modification : `/bot recharger`.
+Toutes les valeurs du jeu sont dans **un seul fichier** : `config/config.json` (taux, coûts, pitié, XP,
+récompenses, missions, boss, boutique, succès, salons, rôles…). Il est créé au premier démarrage et se
+modifie **directement depuis Discord** avec `/config` (staff uniquement) :
 
-À régler en priorité (IDs obtenus par clic droit → *Copier l'identifiant* en mode développeur) :
+| Commande | Exemple |
+|---|---|
+| `/config voir [parametre]` | Sommaire, une section (`boss`) ou une valeur (`gacha.pity_hero`) avec sa description et sa valeur par défaut |
+| `/config modifier parametre valeur` | `gacha.pity_hero` → `60` · `boss.hour` → `20` · `gifts.enabled` → `false` · `shop.items.0.price.gold` → `15000` · `daily.rewards.6` → `{"gems": 800, "gold": 6000}` |
+| `/config reinitialiser parametre` | Revenir à la valeur par défaut (`tout` + `confirmer` pour tout réinitialiser) |
+| `/config supprimer parametre` | Retirer un élément de liste (`shop.items.3`) ou un palier (`leveling.level_roles.10`) |
+| `/config salon fonction [salon]` | Salon des annonces, des alertes staff, des niveaux, des succès, du boss, du wordle |
+| `/config salons liste action [salon]` | Salons autorisés pour les commandes, salons sans XP |
+| `/config staff action [role]` | Rôles qui ont accès à `/admin`, `/bot` et `/config` |
+| `/config role-boss [role]` · `/config role-niveau niveau [role]` | Rôle mentionné pour le boss, rôles automatiques par niveau |
+| `/config exporter` · `/config importer fichier` | Télécharger le `config.json`, le modifier sur ton PC, le renvoyer |
 
-```yaml
-channels:
-  announcements: 111111111111111111   # nouveautés après chaque mise à jour
-  admin: 222222222222222222           # alertes staff (nouvelle version dispo…)
-  level_up: 333333333333333333        # annonces de niveau
-  boss: 444444444444444444            # salon du boss du samedi
-  allowed: []                         # salons autorisés pour les commandes (vide = partout)
-roles:
-  staff: [555555555555555555]         # accès à /admin et /bot (les administrateurs l'ont toujours)
-  boss_ping: 666666666666666666       # rôle mentionné quand le boss apparaît
-leveling:
-  level_roles:                        # rôles automatiques par niveau
-    10: 777777777777777777
-    25: 888888888888888888
+- Le paramètre s'écrit `section.cle` (les éléments de liste par leur numéro, à partir de 0) ; l'**autocomplétion** propose tous les chemins avec leur valeur actuelle.
+- Chaque modification est **vérifiée** (type, taux qui totalisent 100 %, fuseau horaire valide, boss complets…) puis **appliquée immédiatement**, sans redémarrage. L'ancienne version est gardée dans `config.json.bak` et la modification est tracée dans le salon staff.
+- Tu peux aussi éditer le fichier à la main sur le NAS, puis `/bot recharger`. S'il contient une erreur, le bot démarre avec les valeurs par défaut et prévient le staff.
+- Lors d'une mise à jour du bot, les **nouvelles options** sont ajoutées automatiquement : ta config n'est jamais écrasée.
+- Si tu avais déjà un `config.yaml` (v1.0.0), il est converti automatiquement en `config.json` au démarrage (l'ancien fichier est renommé `config.yaml.migre`).
+- Les **secrets** (token Discord, token API, mot de passe Watchtower) restent dans `.env` et ne sont **pas** modifiables depuis Discord : un token affiché dans un salon serait compromis.
+
+Premiers réglages conseillés, juste après l'installation :
+
 ```
-
-Lors d'une mise à jour du bot, les **nouvelles options** sont ajoutées automatiquement avec leur valeur par
-défaut : ton fichier n'est jamais écrasé.
+/config staff action:Ajouter role:@Officier
+/config salon fonction:Annonces des nouveautés salon:#annonces-bot
+/config salon fonction:Alertes du staff salon:#staff
+/config salon fonction:Boss du samedi salon:#boss
+/config role-boss role:@Raid
+/config role-niveau niveau:10 role:@Gardien
+```
 
 ## 6. Mettre à jour le bot (`/bot update`)
 
@@ -187,6 +197,7 @@ Pour publier une version : augmenter `__version__` dans `bot/__init__.py` et ajo
 | `/dummy tester·classement` | Mannequin d'entraînement |
 | `/boutique voir·acheter` · `/donner` | Boutique et dons |
 | `/succes` · `/titre` | Succès et titres |
+| `/config voir·modifier·reinitialiser·supprimer·salon·salons·staff·role-boss·role-niveau·exporter·importer` | **Staff** : configuration du jeu |
 | `/bot version·verifier·update·sync·recharger` | **Staff** : gestion du bot |
 | `/admin donner·retirer·heros·reset·boss-lancer·boss-terminer·annonce` | **Staff** : gestion des joueurs |
 
@@ -228,4 +239,5 @@ python -m bot                               # lancer le bot (variables de .env e
 ```
 
 Structure : `bot/game/` (règles pures : combat, gacha, stats), `bot/services/` (base de données),
-`bot/cogs/` (commandes Discord), `config/config.yaml` (valeurs par défaut), `tests/`.
+`bot/cogs/` (commandes Discord), `config/config.json` (valeurs par défaut),
+`bot/data/config_help.json` (description de chaque paramètre, affichée par `/config voir`), `tests/`.

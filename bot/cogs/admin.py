@@ -43,6 +43,11 @@ class Admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_first_ready(self) -> None:
+        if self.bot.config_problems:
+            await self.bot.notify_staff(
+                "⚠️ `config.json` contient des erreurs, le bot utilise les valeurs par défaut :\n• "
+                + "\n• ".join(self.bot.config_problems[:10])[:1800]
+                + "\nCorrige le fichier puis `/bot recharger`, ou importe une config valide avec `/config importer`.")
         await self.announce_new_version()
         if self.bot.data.needs_sync() and os.getenv("GTALES_API_TOKEN"):
             asyncio.create_task(self.sync_heroes(notify=True))
@@ -183,14 +188,11 @@ class Admin(commands.Cog):
         message = await self.sync_heroes()
         await interaction.followup.send(message, ephemeral=True)
 
-    @botgrp.command(name="recharger", description="Recharger config.yaml sans redémarrer")
+    @botgrp.command(name="recharger", description="Relire config.json après une modification à la main")
     @staff_only()
     async def recharger(self, interaction: discord.Interaction) -> None:
         bot = bot_of(interaction)
-        try:
-            bot.reload_config()
-        except Exception as exc:
-            raise GameError(f"config.yaml invalide : {exc}") from exc
+        bot.reload_config()
         await interaction.response.send_message("✅ Configuration rechargée.", ephemeral=True)
 
     # -- /admin ----------------------------------------------------------------

@@ -12,7 +12,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from . import __version__
-from .config import load_config
+from .config import USER_CONFIG, ConfigError, load_config, validate, write_json
 from .db import Database
 from .gamedata import GameData
 from .services.collection import Collection, GameError
@@ -37,10 +37,11 @@ EXTENSIONS = (
     "bot.cogs.shop",
     "bot.cogs.achievements",
     "bot.cogs.admin",
+    "bot.cogs.settings",
 )
 
 # Groupes de commandes utilisables partout par le staff
-STAFF_GROUPS = {"admin", "bot"}
+STAFF_GROUPS = {"admin", "bot", "config"}
 
 
 def is_staff(cfg, member: discord.abc.User) -> bool:
@@ -88,8 +89,8 @@ class Tree(app_commands.CommandTree):
 
     async def on_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
         original = getattr(error, "original", error)
-        if isinstance(original, GameError):
-            await reply(interaction, f"❌ {original}", ephemeral=True)
+        if isinstance(original, (GameError, ConfigError)):
+            await reply(interaction, f"❌ {original}"[:2000], ephemeral=True)
             return
         if isinstance(error, app_commands.CheckFailure):
             await reply(interaction, "⛔ Tu n'as pas la permission d'utiliser cette commande.", ephemeral=True)
@@ -119,6 +120,8 @@ class LittlePrincess(commands.Bot):
         self.leveling = Leveling(app)
         self.version = __version__
         self._ready_once = False
+        # Problèmes détectés dans config.json au démarrage (signalés au staff)
+        self.config_problems: list[str] = []
 
     # -- raccourcis -----------------------------------------------------------
 
@@ -139,9 +142,23 @@ class LittlePrincess(commands.Bot):
         return f"LittlePrincessBot/{self.version} (+https://github.com/{self.cfg.update.repository})"
 
     def reload_config(self) -> None:
-        self.app.cfg = load_config()
-        self.app.data.cfg = self.app.cfg
+        """Relit config.json (après une modification à la main ou depuis Discord)."""
+        cfg = load_config()
+        problems = validate(cfg)
+        if problems:
+            raise ConfigError("config.json contient des erreurs :\n• " + "\n• ".join(problems[:15]))
+        self.app.cfg = cfg
+        self.app.data.cfg = cfg
         self.app.data.load()
+        self.config_problems = []
+
+    def save_config(self, data: dict) -> None:
+        """Valide, enregistre config.json (avec sauvegarde .bak) et applique la nouvelle config."""
+        problems = validate(data)
+        if problems:
+            raise ConfigError("Modification refusée :\n• " + "\n• ".join(problems[:15]))
+        write_json(USER_CONFIG, data)
+        self.reload_config()
 
     # -- démarrage ------------------------------------------------------------
 

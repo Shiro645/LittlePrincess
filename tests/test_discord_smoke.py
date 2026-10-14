@@ -13,7 +13,7 @@ from tests.helpers import make_config, make_data
 HAS_DISCORD = importlib.util.find_spec("discord") is not None
 
 EXPECTED = {"aide", "profil", "classement", "invoquer", "bannieres", "heros", "arme", "team", "daily", "missions",
-            "wordle", "colisee", "boss", "dummy", "boutique", "donner", "succes", "titre", "bot", "admin"}
+            "wordle", "colisee", "boss", "dummy", "boutique", "donner", "succes", "titre", "bot", "admin", "config"}
 
 
 @unittest.skipUnless(HAS_DISCORD, "discord.py non installé")
