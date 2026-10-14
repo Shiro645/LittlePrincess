@@ -165,14 +165,31 @@ class LittlePrincess(commands.Bot):
     async def setup_hook(self) -> None:
         for ext in EXTENSIONS:
             await self.load_extension(ext)
-        if self.guild_id:
-            guild = discord.Object(id=self.guild_id)
-            self.tree.copy_global_to(guild=guild)
-            synced = await self.tree.sync(guild=guild)
-            log.info("%d commandes synchronisées sur le serveur %s", len(synced), self.guild_id)
-        else:
+        await self.sync_commands()
+
+    async def sync_commands(self) -> tuple[int, list[str]]:
+        """Enregistre les commandes sur le serveur et supprime les anciennes commandes globales.
+
+        Les commandes globales (par exemple celles d'un ancien bot qui utilisait la même
+        application Discord) s'afficheraient en plus des nôtres : on les efface.
+        Retourne (nombre de commandes synchronisées, noms des commandes globales supprimées).
+        """
+        if not self.guild_id:
             synced = await self.tree.sync()
             log.warning("GUILD_ID absent : %d commandes globales (peut prendre 1 h à apparaître)", len(synced))
+            return len(synced), []
+        guild = discord.Object(id=self.guild_id)
+        self.tree.copy_global_to(guild=guild)
+        synced = await self.tree.sync(guild=guild)
+        log.info("%d commandes synchronisées sur le serveur %s", len(synced), self.guild_id)
+        stale = await self.tree.fetch_commands()
+        if not stale:
+            return len(synced), []
+        self.tree.clear_commands(guild=None)
+        await self.tree.sync()
+        names = [command.name for command in stale]
+        log.info("%d anciennes commandes globales supprimées : %s", len(names), ", ".join(names))
+        return len(synced), names
 
     async def on_ready(self) -> None:
         log.info("Connecté en tant que %s (v%s)", self.user, self.version)

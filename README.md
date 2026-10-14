@@ -198,7 +198,7 @@ Pour publier une version : augmenter `__version__` dans `bot/__init__.py` et ajo
 | `/boutique voir·acheter` · `/donner` | Boutique et dons |
 | `/succes` · `/titre` | Succès et titres |
 | `/config voir·modifier·reinitialiser·supprimer·salon·salons·staff·role-boss·role-niveau·exporter·importer` | **Staff** : configuration du jeu |
-| `/bot version·verifier·update·sync·recharger` | **Staff** : gestion du bot |
+| `/bot version·verifier·update·sync·commandes·recharger` | **Staff** : gestion du bot |
 | `/admin donner·retirer·heros·reset·boss-lancer·boss-terminer·annonce` | **Staff** : gestion des joueurs |
 
 ## Règles du jeu
@@ -224,6 +224,7 @@ Tout l'état du jeu est dans le dossier `data/` (fichier `littleprincess.db`). P
 |---|---|
 | `PrivilegedIntentsRequired` dans les logs | Active **Server Members Intent** (étape 1.3). |
 | Les commandes `/` n'apparaissent pas | Vérifie `GUILD_ID` ; réinvite le bot avec le scope `applications.commands`. |
+| Les commandes d'un ancien bot apparaissent | Même application Discord : le bot les supprime au démarrage (ou `/bot commandes`), puis Ctrl+R dans Discord. Autre bot encore sur le serveur : expulse-le. |
 | Les rôles de niveau ne sont pas donnés | Permission *Gérer les rôles* + rôle du bot au-dessus des rôles de niveau. |
 | `/bot update` : « Watchtower injoignable » | Le container `littleprincess-watchtower` doit tourner (même `docker-compose.yml`). |
 | `/bot update` : HTTP 401 | `WATCHTOWER_TOKEN` différent entre le bot et Watchtower : relance `docker compose up -d`. |
