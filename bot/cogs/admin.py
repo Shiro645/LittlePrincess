@@ -188,6 +188,17 @@ class Admin(commands.Cog):
         message = await self.sync_heroes()
         await interaction.followup.send(message, ephemeral=True)
 
+    @botgrp.command(name="commandes", description="Resynchroniser les commandes / avec Discord")
+    @staff_only()
+    async def commandes(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        count, removed = await self.bot.sync_commands()
+        text = f"✅ {count} commandes synchronisées sur le serveur."
+        if removed:
+            text += f"\n🧹 Anciennes commandes globales supprimées : {', '.join(f'`/{n}`' for n in removed)}"
+        text += "\nSi Discord affiche encore d'anciennes commandes, recharge l'application (Ctrl+R)."
+        await interaction.followup.send(text, ephemeral=True)
+
     @botgrp.command(name="recharger", description="Relire config.json après une modification à la main")
     @staff_only()
     async def recharger(self, interaction: discord.Interaction) -> None:

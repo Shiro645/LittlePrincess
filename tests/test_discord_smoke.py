@@ -61,5 +61,46 @@ class DiscordSmokeTest(unittest.IsolatedAsyncioTestCase):
         await bot.close()
 
 
+@unittest.skipUnless(HAS_DISCORD, "discord.py non installé")
+class CommandSyncTest(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        from bot.client import EXTENSIONS, LittlePrincess
+        from bot.db import Database
+        from bot.services.context import AppContext
+
+        tmp = Path(tempfile.mkdtemp())
+        cfg = make_config()
+        self.db = Database(tmp / "sync.db")
+        await self.db.connect()
+        self.bot = LittlePrincess(AppContext(cfg, self.db, make_data(cfg, tmp)), guild_id=123)
+        for ext in EXTENSIONS:
+            await self.bot.load_extension(ext)
+
+    async def asyncTearDown(self):
+        await self.bot.close()
+
+    async def test_guild_sync_removes_stale_global_commands(self):
+        from types import SimpleNamespace
+        from unittest.mock import AsyncMock
+
+        tree = self.bot.tree
+        tree.sync = AsyncMock(side_effect=lambda guild=None: list(tree.get_commands(guild=guild)))
+        tree.fetch_commands = AsyncMock(return_value=[SimpleNamespace(name="ancienne"), SimpleNamespace(name="vieux")])
+        count, removed = await self.bot.sync_commands()
+        self.assertGreaterEqual(count, 20)
+        self.assertEqual(removed, ["ancienne", "vieux"])
+        self.assertEqual(tree.sync.await_count, 2)               # serveur puis global (vidé)
+        self.assertEqual(tree.get_commands(), [])                 # plus aucune commande globale
+        guild_names = {c.name for c in tree.get_commands(guild=SimpleNamespace(id=123))}
+        self.assertIn("invoquer", guild_names)                   # nos commandes restent sur le serveur
+
+        # Deuxième synchro (/bot commandes) : rien à nettoyer, les commandes du serveur sont conservées
+        tree.sync.reset_mock()
+        tree.fetch_commands = AsyncMock(return_value=[])
+        count2, removed2 = await self.bot.sync_commands()
+        self.assertEqual((count2, removed2), (count, []))
+        self.assertEqual(tree.sync.await_count, 1)
+
+
 if __name__ == "__main__":
     unittest.main()
