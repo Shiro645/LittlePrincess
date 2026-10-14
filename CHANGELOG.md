@@ -15,3 +15,4 @@ après une mise à jour du bot. Pour une nouvelle version : augmente `__version_
 - 👹 **Boss du samedi 18h** en direct au tour par tour + rattrapage solo (`/boss`)
 - 🎯 **Dummy** pour tester ses dégâts (`/dummy tester`)
 - 🛒 Boutique, 🎁 dons, 🏆 succès et titres
+- ⚙️ **Configuration modifiable depuis Discord** (`/config`) : toutes les valeurs du jeu dans un seul `config.json`

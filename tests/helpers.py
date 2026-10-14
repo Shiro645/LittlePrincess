@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
 from bot.config import load_config  # noqa: E402
 from bot.gamedata import GameData  # noqa: E402
 
-DEFAULT_CONFIG = ROOT / "config" / "config.yaml"
+DEFAULT_CONFIG = ROOT / "config" / "config.json"
 
 
 def make_config():

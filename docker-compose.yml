@@ -5,7 +5,8 @@
 #   3. docker compose logs -f bot
 #
 # Dossiers créés à côté de ce fichier :
-#   ./config  -> config.yaml (toutes les valeurs du jeu, créé au 1er démarrage)
+#   ./config  -> config.json (toutes les valeurs du jeu, créé au 1er démarrage,
+#                modifiable depuis Discord avec /config)
 #   ./data    -> base de données SQLite + cache des héros (à sauvegarder)
 
 services:

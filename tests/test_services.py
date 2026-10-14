@@ -62,9 +62,9 @@ class ServicesTest(unittest.IsolatedAsyncioTestCase):
         outcomes = await self.db.transaction(_tx)
         self.assertEqual([o.status for o in outcomes], ["new", "star_up", "star_up", "converted"])
         self.assertEqual(outcomes[2].stars, 5)
-        self.assertEqual(outcomes[3].converted, dict(self.cfg.gacha.duplicate_conversion.hero[3]))
+        self.assertEqual(outcomes[3].converted, dict(self.cfg.gacha.duplicate_conversion.hero["3"]))
         player = await self.players.find(1)
-        self.assertEqual(player["gems"], self.cfg.economy.start_gems + self.cfg.gacha.duplicate_conversion.hero[3]["gems"])
+        self.assertEqual(player["gems"], self.cfg.economy.start_gems + self.cfg.gacha.duplicate_conversion.hero["3"]["gems"])
 
         wpull = Pull(WEAPON, "g-bow-1", 1)
         outcome = await self.db.transaction(lambda conn: add_pull_sync(conn, self.cfg, 1, wpull, 1))
