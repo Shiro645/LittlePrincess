@@ -129,11 +129,38 @@ def load_defaults(default_path: Path = DEFAULT_CONFIG) -> dict:
     return read_json(default_path)
 
 
+def _stringify_keys(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): _stringify_keys(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_stringify_keys(v) for v in value]
+    return value
+
+
+def migrate_yaml(user_path: Path, defaults: dict) -> bool:
+    """v1.0.0 utilisait config.yaml : on le convertit une fois en config.json (l'ancien fichier est renommé)."""
+    legacy = user_path.with_name("config.yaml")
+    if user_path.exists() or not legacy.exists():
+        return False
+    try:
+        import yaml
+    except ImportError:
+        return False
+    try:
+        data = yaml.safe_load(legacy.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as exc:
+        raise ConfigError(f"Impossible de convertir l'ancien config.yaml : {exc}") from exc
+    write_json(user_path, deep_merge(defaults, _stringify_keys(data)), backup=False)
+    legacy.rename(legacy.with_name("config.yaml.migre"))
+    return True
+
+
 def load_config(default_path: Path = DEFAULT_CONFIG, user_path: Path = USER_CONFIG) -> Section:
     """Charge la config. Crée le fichier utilisateur (copie complète des valeurs par défaut) s'il n'existe pas."""
     defaults = read_json(default_path)
     if default_path != user_path and not user_path.exists():
-        write_json(user_path, defaults, backup=False)
+        if not migrate_yaml(user_path, defaults):
+            write_json(user_path, defaults, backup=False)
     return _wrap(deep_merge(defaults, read_json(user_path)))
 
 

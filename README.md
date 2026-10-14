@@ -148,6 +148,7 @@ modifie **directement depuis Discord** avec `/config` (staff uniquement) :
 - Chaque modification est **vérifiée** (type, taux qui totalisent 100 %, fuseau horaire valide, boss complets…) puis **appliquée immédiatement**, sans redémarrage. L'ancienne version est gardée dans `config.json.bak` et la modification est tracée dans le salon staff.
 - Tu peux aussi éditer le fichier à la main sur le NAS, puis `/bot recharger`. S'il contient une erreur, le bot démarre avec les valeurs par défaut et prévient le staff.
 - Lors d'une mise à jour du bot, les **nouvelles options** sont ajoutées automatiquement : ta config n'est jamais écrasée.
+- Si tu avais déjà un `config.yaml` (v1.0.0), il est converti automatiquement en `config.json` au démarrage (l'ancien fichier est renommé `config.yaml.migre`).
 - Les **secrets** (token Discord, token API, mot de passe Watchtower) restent dans `.env` et ne sont **pas** modifiables depuis Discord : un token affiché dans un salon serait compromis.
 
 Premiers réglages conseillés, juste après l'installation :

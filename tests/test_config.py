@@ -43,6 +43,22 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(cfg.gacha.cost_single, 100)
         self.assertEqual(cfg.gacha.cost_ten, 2700)
 
+    def test_yaml_migration(self):
+        try:
+            import yaml
+        except ImportError:
+            self.skipTest("PyYAML non installé")
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "config.yaml").write_text(yaml.safe_dump({"gacha": {"pity_hero": 42},
+                                                         "leveling": {"level_roles": {10: 123}}}), encoding="utf-8")
+        cfg = load_config(DEFAULT_CONFIG, tmp / "config.json")
+        self.assertEqual(cfg.gacha.pity_hero, 42)
+        self.assertEqual(cfg.leveling.level_roles, {"10": 123})
+        self.assertEqual(cfg.gacha.cost_single, 300)
+        self.assertTrue((tmp / "config.json").exists())
+        self.assertFalse((tmp / "config.yaml").exists())
+        self.assertTrue((tmp / "config.yaml.migre").exists())
+
     def test_invalid_json_is_reported(self):
         tmp = Path(tempfile.mkdtemp())
         user = tmp / "config.json"

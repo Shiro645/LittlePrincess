@@ -4,6 +4,13 @@ Chaque section est annoncée automatiquement sur Discord (salon `channels.announ
 après une mise à jour du bot. Pour une nouvelle version : augmente `__version__` dans
 `bot/__init__.py` et ajoute une section en haut de ce fichier.
 
+## [1.1.0] - Configuration depuis Discord
+- ⚙️ Toutes les valeurs du jeu sont maintenant dans un seul fichier **`config.json`**
+- 🛠️ Le staff peut tout régler **directement depuis Discord** avec `/config` : voir, modifier, réinitialiser, exporter et importer la configuration
+- 📍 Raccourcis pour choisir les salons du bot, les rôles staff, le rôle du boss et les rôles de niveau
+- ✅ Chaque modification est vérifiée et appliquée tout de suite, sans redémarrer le bot
+- 🔄 L'ancien `config.yaml` est converti automatiquement
+
 ## [1.0.0] - Lancement
 - 🎰 **Invocations** de héros et d'armes (`/invoquer`, `/bannieres`) : taux officiels, bannière vedette hebdomadaire, 3★ garanti (pitié)
 - 🦸 **Collection** : doublon = +1★, niveaux achetés avec de l'or, armes génériques et exclusives (`/heros`, `/arme`)
@@ -15,4 +22,3 @@ après une mise à jour du bot. Pour une nouvelle version : augmente `__version_
 - 👹 **Boss du samedi 18h** en direct au tour par tour + rattrapage solo (`/boss`)
 - 🎯 **Dummy** pour tester ses dégâts (`/dummy tester`)
 - 🛒 Boutique, 🎁 dons, 🏆 succès et titres
-- ⚙️ **Configuration modifiable depuis Discord** (`/config`) : toutes les valeurs du jeu dans un seul `config.json`
