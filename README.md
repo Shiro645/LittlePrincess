@@ -38,7 +38,7 @@ The bot talks to players in **French**; the code and this documentation are in E
 | ⚔️ **Colosseum** | Live duel against a member, automatically simulated fight, gem bets. |
 | 👹 **Boss** | Every Saturday at 18:00: live turn-based raid (buttons), then a solo catch-up until Sunday night. HP adapts to the guild's strength. |
 | 🎯 **Dummy** | Test the damage of your team or of one hero, per-skill breakdown, leaderboard. |
-| ⚙️ **Configuration panel** | Every game value lives in one `config.json`, edited from an interactive panel posted by the bot. |
+| ⚙️ **Configuration panel** | Every game value lives in one `config.json`, edited from an interactive panel that only the staff member sees. |
 | 🛒 **Misc** | Shop, capped gifts, achievements, titles, dedicated channels, `/bot update` with a changelog announcement. |
 
 ---
@@ -137,13 +137,13 @@ Clone the repository, replace `image: …` with `build: .` in `docker-compose.ym
 Every game value lives in **one file**, `config/config.json`: rates, costs, pity, XP, rewards, missions, boss,
 shop, achievements, channels, roles… It is created on first start and edited **from Discord**:
 
-1. A staff member runs **`/config panneau`** in a (preferably staff-only) channel. The bot posts the panel message.
-   It keeps working after restarts and is refreshed automatically after an update.
-2. Pick a section in the menu. An ephemeral browser opens:
+1. A staff member runs **`/config panneau`**. The panel opens as an **ephemeral message**: only they see it,
+   nothing is posted in the channel, and it disappears when dismissed.
+2. Pick a section in the menu. The same message turns into a browser:
    - 🔘 **booleans** toggle with one click;
    - #️⃣ 👥 **channels and roles** use Discord's channel/role pickers (no IDs to copy);
    - ✏️ **other values** open a form pre-filled with the current value; 📁 sub-sections open in place;
-   - buttons: **Back**, **Edit as JSON**, **Add an item** (lists), **Add a tier** (level roles),
+   - buttons: **Back** (up to the section list), **Edit as JSON**, **Add an item** (lists), **Add a tier** (level roles),
      **Delete this item**, **Reset** (two clicks).
 3. The panel also has **Export** (download `config.json`) and **Reload file** (after a manual edit).
    `/config importer` uploads a whole `config.json`.

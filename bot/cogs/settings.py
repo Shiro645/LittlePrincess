@@ -1,6 +1,7 @@
 """Configuration from Discord (staff only).
 
-`/config panneau` posts the interactive configuration panel (see bot/ui/config_panel.py).
+`/config panneau` opens the interactive configuration panel as an ephemeral message
+(see bot/ui/config_panel.py).
 `/config exporter` / `/config importer` download and upload the whole config.json.
 
 Every change goes through `Settings.edit()`: copy the current config, mutate the copy,
@@ -26,33 +27,12 @@ from ._common import bot_of, staff_only
 
 log = logging.getLogger(__name__)
 
-PANEL_META_KEY = "config_panel"
-
-
 class Settings(commands.Cog):
     config = app_commands.Group(name="config", description="Configuration du bot (staff)", guild_only=True)
 
     def __init__(self, bot):
         self.bot = bot
         self.lock = asyncio.Lock()
-
-    async def cog_load(self) -> None:
-        # Persistent view: buttons of an already posted panel keep working after a restart
-        self.bot.add_view(ConfigPanelView(self.bot))
-
-    @commands.Cog.listener()
-    async def on_first_ready(self) -> None:
-        """Refresh the posted panel (new sections or version after an update)."""
-        stored = await self.bot.db.get_meta(PANEL_META_KEY)
-        if not stored:
-            return
-        try:
-            channel_id, message_id = (int(x) for x in stored.split(":"))
-            channel = self.bot.get_channel(channel_id) or await self.bot.fetch_channel(channel_id)
-            message = await channel.fetch_message(message_id)
-            await message.edit(embed=panel_embed(self.bot), view=ConfigPanelView(self.bot))
-        except (ValueError, discord.HTTPException, AttributeError) as exc:
-            log.info("Config panel not refreshed (%s)", exc)
 
     async def edit(self, interaction: discord.Interaction, mutate: Callable[[dict], str]) -> str:
         """Apply `mutate` to a copy of the config, then validate, save and reload."""
@@ -64,22 +44,11 @@ class Settings(commands.Cog):
         await self.bot.notify_staff(f"⚙️ {interaction.user.mention} a modifié la config : {summary}"[:1900])
         return summary
 
-    @config.command(name="panneau", description="Publier le panneau de configuration dans ce salon")
+    @config.command(name="panneau", description="Ouvrir le panneau de configuration (visible par toi seul)")
     @staff_only()
     async def panneau(self, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message(embed=panel_embed(self.bot), view=ConfigPanelView(self.bot))
-        message = await interaction.original_response()
-        previous = await self.bot.db.get_meta(PANEL_META_KEY)
-        await self.bot.db.set_meta(PANEL_META_KEY, f"{message.channel.id}:{message.id}")
-        if previous and previous != f"{message.channel.id}:{message.id}":
-            try:
-                channel_id, message_id = (int(x) for x in previous.split(":"))
-                channel = self.bot.get_channel(channel_id)
-                if channel:
-                    old = await channel.fetch_message(message_id)
-                    await old.delete()
-            except (ValueError, discord.HTTPException):
-                pass
+        await interaction.response.send_message(embed=panel_embed(self.bot), view=ConfigPanelView(self.bot),
+                                                ephemeral=True)
 
     @config.command(name="exporter", description="Télécharger le fichier config.json actuel")
     @staff_only()
