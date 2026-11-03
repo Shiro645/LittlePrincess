@@ -37,7 +37,7 @@ class ConfigPanelTest(unittest.IsolatedAsyncioTestCase):
 
         view = ConfigPanelView(self.bot)
         self.check_view(view)
-        self.assertTrue(all(item.custom_id for item in view.children), "persistent view needs custom_ids")
+        self.assertIsNotNone(view.timeout, "the panel is ephemeral, not persistent")
         embed = panel_embed(self.bot)
         self.assertLessEqual(len(embed), 6000)
 

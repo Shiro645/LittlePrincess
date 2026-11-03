@@ -1,8 +1,8 @@
 """Interactive configuration panel (staff only).
 
-The panel is a persistent message posted by `/config panneau`. Picking a section
-opens an ephemeral browser where staff members navigate the config tree and edit
-values through the most fitting control:
+`/config panneau` opens the panel as an ephemeral message (only the caller sees it).
+Picking a section turns that same message into a browser where staff members
+navigate the config tree and edit values through the most fitting control:
 
 * booleans          -> toggled with one click
 * channel / role IDs -> Discord channel or role pickers
@@ -27,9 +27,6 @@ from . import format as ui
 if TYPE_CHECKING:
     from ..cogs.settings import Settings
 
-PANEL_SELECT_ID = "lp:config:section"
-PANEL_EXPORT_ID = "lp:config:export"
-PANEL_RELOAD_ID = "lp:config:reload"
 PAGE_SIZE = 25
 LEVEL_ROLES = "leveling.level_roles"
 TEXT_CHANNELS = [discord.ChannelType.text, discord.ChannelType.news]
@@ -105,7 +102,7 @@ def panel_embed(bot) -> discord.Embed:
                  "Les changements sont vérifiés puis appliqués immédiatement, sans redémarrer le bot.")
     lines = [f"**{key}** — {help_for(key) or ''}"[:120] for key in plain(cfg)]
     e.add_field(name="Sections", value="\n".join(lines)[:1024], inline=False)
-    e.set_footer(text=f"Réservé au staff · v{bot.version} · chaque modification est tracée dans le salon staff")
+    e.set_footer(text=f"Visible par toi seul · v{bot.version} · chaque modification est tracée dans le salon staff")
     return e
 
 
@@ -119,26 +116,26 @@ async def _deny(interaction: discord.Interaction) -> bool:
 
 
 # ---------------------------------------------------------------------------
-#  Persistent panel message
+#  Panel (entry screen)
 # ---------------------------------------------------------------------------
 
 class ConfigPanelView(discord.ui.View):
-    """Persistent view: works after a restart thanks to fixed custom_ids."""
+    """Entry screen: section menu plus export and reload buttons."""
 
     def __init__(self, bot):
-        super().__init__(timeout=None)
+        super().__init__(timeout=900)
         options = []
         for key in list(plain(bot.cfg))[:PAGE_SIZE]:
             desc = help_for(key) or ""
             options.append(discord.SelectOption(label=key[:100], value=key[:100], description=desc[:100] or None))
-        select = discord.ui.Select(custom_id=PANEL_SELECT_ID, placeholder="Choisir une section…", options=options)
+        select = discord.ui.Select(placeholder="Choisir une section…", options=options)
         select.callback = self._on_section
         self.add_item(select)
-        export = discord.ui.Button(custom_id=PANEL_EXPORT_ID, label="Exporter", emoji="📄",
+        export = discord.ui.Button(label="Exporter", emoji="📄",
                                    style=discord.ButtonStyle.secondary)
         export.callback = self._on_export
         self.add_item(export)
-        reload_ = discord.ui.Button(custom_id=PANEL_RELOAD_ID, label="Recharger le fichier", emoji="🔄",
+        reload_ = discord.ui.Button(label="Recharger le fichier", emoji="🔄",
                                     style=discord.ButtonStyle.secondary)
         reload_.callback = self._on_reload
         self.add_item(reload_)
@@ -150,7 +147,7 @@ class ConfigPanelView(discord.ui.View):
         path = interaction.data["values"][0]
         cog = interaction.client.get_cog("Settings")
         embed, view = NodeView.build(cog, path)
-        await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+        await interaction.response.edit_message(embed=embed, view=view)
 
     async def _on_export(self, interaction: discord.Interaction) -> None:
         content = dumps(plain(interaction.client.cfg)) + "\n"
@@ -168,7 +165,7 @@ class ConfigPanelView(discord.ui.View):
 
 
 # ---------------------------------------------------------------------------
-#  Ephemeral config browser
+#  Config browser (same ephemeral message)
 # ---------------------------------------------------------------------------
 
 class NodeView(discord.ui.View):
@@ -202,8 +199,7 @@ class NodeView(discord.ui.View):
             self._button("◀", self._prev, disabled=self.page == 0, row=1)
             self._button(f"{self.page + 1}/{self.pages}", None, disabled=True, row=1)
             self._button("▶", self._next, disabled=self.page >= self.pages - 1, row=1)
-        if parent_of(path):
-            self._button("Retour", self._back, emoji="⬅️", row=2)
+        self._button("Retour", self._back, emoji="⬅️", row=2)
         self._button("Modifier en JSON", self._edit_json, emoji="📝", row=2)
         if isinstance(self.value, list):
             self._button("Ajouter un élément", self._add_item, emoji="➕", row=2)
@@ -276,6 +272,10 @@ class NodeView(discord.ui.View):
         await self.show(interaction, page=self.page + 1)
 
     async def _back(self, interaction: discord.Interaction) -> None:
+        if not parent_of(self.path):
+            bot = self.cog.bot
+            await interaction.response.edit_message(embed=panel_embed(bot), view=ConfigPanelView(bot))
+            return
         await self.show(interaction, path=parent_of(self.path))
 
     async def _on_pick(self, interaction: discord.Interaction) -> None:

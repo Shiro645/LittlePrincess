@@ -4,6 +4,10 @@
 written in French for the players. To release: bump __version__ in bot/__init__.py and add a
 section at the top of this file. -->
 
+## [1.2.1] - Panneau de configuration privé
+- 🔒 `/config panneau` ouvre maintenant le panneau en message privé (visible seulement par toi) au lieu de le poster dans le salon
+- ⬅️ Tout se passe dans le même message : le bouton Retour ramène à la liste des sections
+
 ## [1.2.0] - Panneau de configuration
 - ⚙️ **Nouveau panneau de configuration** : `/config panneau` publie un message interactif pour régler tout le bot (menus, boutons, formulaires)
 - #️⃣ Les salons et les rôles se choisissent directement dans les menus de Discord, plus besoin de copier des identifiants
