@@ -1,10 +1,9 @@
-"""Moteur de combat au tour par tour.
+"""Turn-based combat engine.
 
-Utilisé par le colisée (simulation automatique), le dummy et le boss (les
-joueurs choisissent une action par tour). Les règles s'inspirent de Guardian
-Tales : avantage élémentaire, compétence d'arme avec recharge, compétences de
-chaîne déclenchées par les états À terre / Projeté / Blessé, buffs d'équipe,
-tanks qui attirent les coups et soutiens qui soignent.
+Used by the colosseum (automatic simulation), the dummy and the boss (players pick
+an action each turn). Rules are inspired by Guardian Tales: element advantage,
+weapon skills with cooldowns, chain skills triggered by the Downed / Airborne /
+Injured states, party buffs, tanks drawing aggro and supports healing.
 """
 
 from __future__ import annotations
@@ -26,7 +25,7 @@ ACTION_GUARD = "guard"
 
 @dataclass
 class FighterSpec:
-    """Stats finales d'un combattant (après niveau, étoiles, arme et buffs)."""
+    """Final stats of a fighter (after level, stars, weapon and buffs)."""
 
     name: str
     element: Optional[str]
@@ -45,9 +44,9 @@ class FighterSpec:
     chain_start: Optional[str] = None
     chain_end: Optional[str] = None
     chain_mult: float = 3.0
-    dmg_pct: float = 0.0              # bonus de dégâts général
+    dmg_pct: float = 0.0              # general damage bonus
     skill_dmg_pct: float = 0.0
-    role_dmg_pct: float = 0.0         # dégâts à distance ou de mêlée selon le rôle
+    role_dmg_pct: float = 0.0         # ranged or melee damage depending on the role
     dmg_vs: dict[str, float] = field(default_factory=dict)
     owner_id: int = 0
     hero_key: str = ""
@@ -90,7 +89,7 @@ class Fighter:
 
 @dataclass
 class BattleResult:
-    winner: Optional[int]                  # 0, 1 ou None (égalité)
+    winner: Optional[int]                  # 0, 1 or None (draw)
     rounds: int
     round_logs: list[list[str]]
     fighters: list[Fighter]
@@ -121,10 +120,10 @@ class Battle:
         self.chart = {k: set(v or []) for k, v in self.cfg.element_chart.items()}
         self.add(fighters)
 
-    # -- utilitaires -------------------------------------------------------
+    # -- helpers ----------------------------------------------------------
 
     def add(self, fighters: list[Fighter]) -> None:
-        """Ajoute des combattants et fixe la recharge initiale de leur compétence."""
+        """Add fighters and set the initial cooldown of their skill."""
         initial = self.cfg.get("initial_skill_cooldown", 0)
         for f in fighters:
             if str(initial) == "random":
@@ -143,11 +142,11 @@ class Battle:
         return [e for e in self.fighters if e.side != f.side and e.alive]
 
     def teammates(self, f: Fighter) -> list[Fighter]:
-        """Alliés de la même équipe (même joueur) : pour les chaînes et les soins."""
+        """Allies from the same team (same player): used for chains and heals."""
         return [a for a in self.fighters if a.side == f.side and a.alive and a.spec.owner_id == f.spec.owner_id]
 
     def element_multiplier(self, attacker: Optional[str], defender: Optional[str]) -> float:
-        """Feu > Terre > Eau > Feu ; Lumière et Ténèbres se battent mutuellement."""
+        """Fire > Earth > Water > Fire; Light and Dark are strong against each other."""
         if not attacker or not defender:
             return 1.0
         if defender in self.chart.get(attacker, ()):
@@ -165,7 +164,7 @@ class Battle:
             return self.rng.choice(tanks)
         return self.rng.choice(enemies)
 
-    # -- dégâts --------------------------------------------------------------
+    # -- damage --------------------------------------------------------------
 
     def compute_damage(self, attacker: Fighter, target: Fighter, mult: float, kind: str) -> tuple[int, bool]:
         spec = attacker.spec
@@ -211,7 +210,7 @@ class Battle:
         return dealt
 
     def trigger_chain(self, source: Fighter, target: Fighter, state: str, combo: int) -> None:
-        """Un allié dont la chaîne commence par `state` enchaîne immédiatement."""
+        """An ally whose chain starts with `state` follows up immediately."""
         for ally in self.teammates(source):
             if ally is source:
                 continue
@@ -272,11 +271,11 @@ class Battle:
         else:
             mult = float(self.cfg.normal_attack_multiplier)
             if action == ACTION_ATTACK:
-                # Attaque concentrée (boss) : plus forte, mais sans compétence
+                # Focused attack (boss): stronger, but no skill
                 mult *= float(self.cfg.get("focus_attack_multiplier", 1.0))
             self.hit(f, target, "na", mult)
 
-    # -- tours ---------------------------------------------------------------
+    # -- rounds ---------------------------------------------------------------
 
     def start_round(self) -> None:
         self.round += 1
@@ -286,7 +285,7 @@ class Battle:
         for f in self.fighters:
             if f.skill_cd_left > 0:
                 f.skill_cd_left -= 1
-            # Un état dure jusqu'à la fin du tour suivant son application
+            # A state lasts until the end of the round after it was applied
             if f.state and f.state_until <= self.round:
                 f.state = None
         logs = self._log
@@ -340,13 +339,13 @@ class Battle:
 class BossAttack:
     name: str
     kind: str          # single | aoe
-    hp_pct: float      # dégâts en % des PV max de la cible
+    hp_pct: float      # damage as % of the target's max HP
     weight: int = 1
     state: Optional[str] = None
 
 
 def boss_turn(battle: Battle, boss: Fighter, attacks: list[BossAttack]) -> None:
-    """Le boss attaque les héros du camp 0."""
+    """The boss attacks the heroes on side 0."""
     if not boss.alive or not attacks:
         return
     targets_pool = battle.alive(0)

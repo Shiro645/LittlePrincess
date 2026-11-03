@@ -1,4 +1,4 @@
-"""Héros, armes et équipe : /heros, /arme, /team."""
+"""Heroes, weapons and team: /heros, /arme, /team."""
 
 from __future__ import annotations
 

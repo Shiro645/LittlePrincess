@@ -1,4 +1,4 @@
-"""Commandes générales : /aide, /profil, /classement."""
+"""General commands: /aide, /profil, /classement."""
 
 from __future__ import annotations
 

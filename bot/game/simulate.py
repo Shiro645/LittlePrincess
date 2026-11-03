@@ -1,4 +1,4 @@
-"""Simulations prêtes à l'emploi : dummy et estimation des dégâts sur un boss."""
+"""Ready-made simulations: dummy runs and boss damage estimates."""
 
 from __future__ import annotations
 
@@ -45,7 +45,7 @@ def run_dummy(cfg, specs: list[FighterSpec], turns: int, element: Optional[str] 
 
 def estimate_damage(cfg, specs: list[FighterSpec], turns: int, element: Optional[str], defense: int,
                     samples: int = 3) -> int:
-    """Dégâts moyens d'une équipe sur `turns` tours contre une cible (sert aux PV adaptatifs du boss)."""
+    """Average damage of a team over `turns` rounds against a target (used for adaptive boss HP)."""
     if not specs:
         return 0
     totals = [run_dummy(cfg, specs, turns, element, defense, random.Random(i)).total for i in range(samples)]

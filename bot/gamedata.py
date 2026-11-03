@@ -1,9 +1,8 @@
-"""Données de jeu : héros (API Guardian Tales TOP) et armes.
+"""Game data: heroes (Guardian Tales TOP API) and weapons.
 
-Les héros viennent de l'API https://gtales.top (token requis). Les réponses
-sont mises en cache dans data/heroes_cache.json. Tant qu'aucun token n'est
-configuré, le bot utilise un petit jeu de données de démarrage
-(bot/data/seed_heroes.json) aux stats approximatives.
+Heroes come from the https://gtales.top API (token required). Responses are cached
+in data/heroes_cache.json. Until a token is configured, the bot uses a small seed
+dataset (bot/data/seed_heroes.json) with approximate stats.
 """
 
 from __future__ import annotations
@@ -30,11 +29,11 @@ WEAPON_TYPES = ("sword_1h", "sword_2h", "rifle", "bow", "basket", "staff", "gaun
 
 
 # ---------------------------------------------------------------------------
-#  Normalisation
+#  Normalization
 # ---------------------------------------------------------------------------
 
 def normalize_name(text: str) -> str:
-    """'Future Princess' -> 'futureprincess' (sans accents ni ponctuation)."""
+    """'Future Princess' -> 'futureprincess' (no accents or punctuation)."""
     text = unicodedata.normalize("NFKD", text or "")
     text = "".join(c for c in text if not unicodedata.combining(c))
     return re.sub(r"[^a-z0-9]", "", text.lower())
@@ -153,17 +152,17 @@ def parse_dps_multiplier(description: str) -> Optional[float]:
 
 
 # ---------------------------------------------------------------------------
-#  Effets (buffs d'équipe, options d'armes…)
+#  Effects (party buffs, weapon options…)
 # ---------------------------------------------------------------------------
 
 @dataclass(frozen=True)
 class Effect:
-    """Un bonus en pourcentage (ou en points pour les chances de critique)."""
+    """A percentage bonus (or points for crit chance)."""
 
     stat: str                 # atk, hp, def, heal, crit_chance, crit_mult, skill_dmg, ranged_dmg, melee_dmg, dmg, dmg_vs
     value: float
-    element: Optional[str] = None      # ne s'applique qu'aux alliés de cet élément
-    vs_element: Optional[str] = None   # pour dmg_vs : contre les ennemis de cet élément
+    element: Optional[str] = None      # only applies to allies of this element
+    vs_element: Optional[str] = None   # for dmg_vs: against enemies of this element
 
 
 _STAT_PATTERNS: list[tuple[str, str]] = [
@@ -183,9 +182,9 @@ _ELEMENT_RE = r"\b(basic|fire|water|earth|light|dark)\b"
 
 
 def parse_effects(text: str) -> list[Effect]:
-    """Analyse un texte du type 'Fire type Atk +30% / Crit Hit Chance 4%'.
+    """Parse text such as 'Fire type Atk +30% / Crit Hit Chance 4%'.
 
-    Ce qui n'est pas reconnu est ignoré (le texte reste affiché tel quel).
+    Anything unrecognized is ignored (the raw text is still displayed).
     """
     effects: list[Effect] = []
     if not text:
@@ -214,7 +213,7 @@ def parse_effects(text: str) -> list[Effect]:
 
 
 # ---------------------------------------------------------------------------
-#  Modèles
+#  Models
 # ---------------------------------------------------------------------------
 
 @dataclass
@@ -247,7 +246,7 @@ class Hero:
     chain_start: Optional[str] = None
     chain_end: Optional[str] = None
     chain_mult: float = 3.0
-    exclusive_weapon: Optional[str] = None   # clé de l'arme exclusive
+    exclusive_weapon: Optional[str] = None   # exclusive weapon key
     seed: bool = False
     image_url: Optional[str] = None
 
@@ -281,7 +280,7 @@ def _pick_variant(raw: dict, variant: str) -> dict:
 
 
 def parse_hero(raw: dict, cfg, assets_base: str) -> Optional[Hero]:
-    """Transforme une réponse /api/heroes?hero=KEY en Hero. None si inutilisable."""
+    """Turn an /api/heroes?hero=KEY response into a Hero. None if unusable."""
     key = str(raw.get("key") or "").strip()
     name = str(raw.get("name") or "").strip()
     if not key or not name:
@@ -387,7 +386,7 @@ def build_generic_weapons(cfg) -> dict[str, WeaponDef]:
 
 
 # ---------------------------------------------------------------------------
-#  Conteneur principal
+#  Main container
 # ---------------------------------------------------------------------------
 
 class GameData:
@@ -402,7 +401,7 @@ class GameData:
         self.seed_names: dict[str, str] = {}
         self._by_name: dict[str, str] = {}
 
-    # -- chargement ---------------------------------------------------------
+    # -- loading ----------------------------------------------------------
 
     @property
     def assets_base(self) -> str:
@@ -424,14 +423,14 @@ class GameData:
                     self.source = "api"
                     self.fetched_at = datetime.fromisoformat(cache["fetched_at"])
             except (ValueError, KeyError, OSError) as exc:
-                log.warning("Cache des héros illisible (%s), utilisation des données de démarrage", exc)
+                log.warning("Unreadable hero cache (%s), using seed data", exc)
         self._build(raw_heroes)
 
     def _read_seed(self) -> list[dict]:
         try:
             return json.loads(SEED_FILE.read_text(encoding="utf-8"))
         except (OSError, ValueError) as exc:
-            log.error("Impossible de lire %s : %s", SEED_FILE, exc)
+            log.error("Cannot read %s: %s", SEED_FILE, exc)
             return []
 
     def _build(self, raw_heroes: list[dict]) -> None:
@@ -442,8 +441,8 @@ class GameData:
         for raw in raw_heroes:
             try:
                 hero = parse_hero(raw, self.cfg, self.assets_base)
-            except Exception:  # une fiche mal formée ne doit pas tout casser
-                log.exception("Fiche héros invalide : %s", raw.get("key"))
+            except Exception:  # one malformed entry must not break everything
+                log.exception("Invalid hero entry: %s", raw.get("key"))
                 continue
             if hero is None or hero.key in excluded:
                 continue
@@ -458,9 +457,9 @@ class GameData:
         self.heroes = heroes
         self.weapons = weapons
         self._by_name = {normalize_name(h.name): h.key for h in heroes.values()}
-        log.info("%d héros et %d armes chargés (source : %s)", len(heroes), len(weapons), self.source)
+        log.info("%d heroes and %d weapons loaded (source: %s)", len(heroes), len(weapons), self.source)
 
-    # -- synchronisation avec l'API -----------------------------------------
+    # -- API sync ---------------------------------------------------------
 
     def needs_sync(self) -> bool:
         if self.source != "api" or self.fetched_at is None:
@@ -469,7 +468,7 @@ class GameData:
         return age.days >= int(self.cfg.gamedata.sync_interval_days)
 
     async def sync_from_api(self, token: str, user_agent: str) -> int:
-        """Télécharge tous les héros depuis l'API. Retourne le nombre de héros."""
+        """Download every hero from the API. Returns the number of heroes."""
         import aiohttp  # fourni par discord.py
 
         if not token:
@@ -504,7 +503,7 @@ class GameData:
                             details.append(detail)
                         break
                     except aiohttp.ClientError as exc:
-                        log.warning("Héros %s : %s (essai %d)", key, exc, attempt + 1)
+                        log.warning("Hero %s: %s (attempt %d)", key, exc, attempt + 1)
                         await asyncio.sleep(2)
                 await asyncio.sleep(delay)
         if not details:
@@ -517,7 +516,7 @@ class GameData:
         self.load()
         return len(self.heroes)
 
-    # -- recherche ------------------------------------------------------------
+    # -- lookup --------------------------------------------------------------
 
     def hero(self, key: str) -> Optional[Hero]:
         return self.heroes.get(str(key))
@@ -526,7 +525,7 @@ class GameData:
         return self.weapons.get(str(key))
 
     def find_hero(self, query: str) -> Optional[Hero]:
-        """Trouve un héros par clé ou par nom (insensible aux accents/majuscules)."""
+        """Find a hero by key or name (case and accent insensitive)."""
         if not query:
             return None
         if query in self.heroes:
@@ -555,6 +554,6 @@ class GameData:
         return sorted((w for w in self.weapons.values() if w.rarity == rarity), key=lambda w: w.key)
 
     def resolve_seed_key(self, seed_key: str) -> Optional[str]:
-        """Retrouve, dans les données de l'API, le héros correspondant à un héros de démarrage."""
+        """Find the API hero matching a seed hero."""
         name = self.seed_names.get(seed_key)
         return self._by_name.get(name) if name else None

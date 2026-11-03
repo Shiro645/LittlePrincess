@@ -1,4 +1,4 @@
-"""Récompenses quotidiennes et missions : /daily, /missions."""
+"""Daily rewards and missions: /daily, /missions."""
 
 from __future__ import annotations
 

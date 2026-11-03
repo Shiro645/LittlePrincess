@@ -40,7 +40,7 @@ EXTENSIONS = (
     "bot.cogs.settings",
 )
 
-# Groupes de commandes utilisables partout par le staff
+# Command groups the staff can use in any channel
 STAFF_GROUPS = {"admin", "bot", "config"}
 
 
@@ -55,7 +55,7 @@ def is_staff(cfg, member: discord.abc.User) -> bool:
 
 async def reply(interaction: discord.Interaction, content: Optional[str] = None, *, ephemeral: bool = False,
                 **kwargs) -> None:
-    """Répond à une interaction, qu'elle ait déjà été acquittée ou non."""
+    """Reply to an interaction whether or not it was already acknowledged."""
     if interaction.response.is_done():
         await interaction.followup.send(content, ephemeral=ephemeral, **kwargs)
     else:
@@ -98,7 +98,7 @@ class Tree(app_commands.CommandTree):
         if isinstance(error, app_commands.CommandOnCooldown):
             await reply(interaction, f"⏳ Patiente encore {error.retry_after:.0f} s.", ephemeral=True)
             return
-        log.error("Erreur dans /%s", interaction.command.qualified_name if interaction.command else "?",
+        log.error("Error in /%s", interaction.command.qualified_name if interaction.command else "?",
                   exc_info=original)
         try:
             await reply(interaction, "💥 Une erreur inattendue est survenue. Le staff peut consulter les logs.",
@@ -120,10 +120,10 @@ class LittlePrincess(commands.Bot):
         self.leveling = Leveling(app)
         self.version = __version__
         self._ready_once = False
-        # Problèmes détectés dans config.json au démarrage (signalés au staff)
+        # Problems found in config.json at startup (reported to the staff)
         self.config_problems: list[str] = []
 
-    # -- raccourcis -----------------------------------------------------------
+    # -- shortcuts ------------------------------------------------------------
 
     @property
     def cfg(self):
@@ -142,7 +142,7 @@ class LittlePrincess(commands.Bot):
         return f"LittlePrincessBot/{self.version} (+https://github.com/{self.cfg.update.repository})"
 
     def reload_config(self) -> None:
-        """Relit config.json (après une modification à la main ou depuis Discord)."""
+        """Reload config.json (after a manual edit or a change made from Discord)."""
         cfg = load_config()
         problems = validate(cfg)
         if problems:
@@ -153,14 +153,14 @@ class LittlePrincess(commands.Bot):
         self.config_problems = []
 
     def save_config(self, data: dict) -> None:
-        """Valide, enregistre config.json (avec sauvegarde .bak) et applique la nouvelle config."""
+        """Validate, save config.json (keeping a .bak copy) and apply the new config."""
         problems = validate(data)
         if problems:
             raise ConfigError("Modification refusée :\n• " + "\n• ".join(problems[:15]))
         write_json(USER_CONFIG, data)
         self.reload_config()
 
-    # -- démarrage ------------------------------------------------------------
+    # -- startup ---------------------------------------------------------------
 
     async def setup_hook(self) -> None:
         for ext in EXTENSIONS:
@@ -168,31 +168,31 @@ class LittlePrincess(commands.Bot):
         await self.sync_commands()
 
     async def sync_commands(self) -> tuple[int, list[str]]:
-        """Enregistre les commandes sur le serveur et supprime les anciennes commandes globales.
+        """Register the commands on the guild and remove leftover global commands.
 
-        Les commandes globales (par exemple celles d'un ancien bot qui utilisait la même
-        application Discord) s'afficheraient en plus des nôtres : on les efface.
-        Retourne (nombre de commandes synchronisées, noms des commandes globales supprimées).
+        Global commands (for example from a previous bot that used the same Discord
+        application) would show up next to ours, so they are deleted.
+        Returns (number of synced commands, names of the removed global commands).
         """
         if not self.guild_id:
             synced = await self.tree.sync()
-            log.warning("GUILD_ID absent : %d commandes globales (peut prendre 1 h à apparaître)", len(synced))
+            log.warning("GUILD_ID not set: %d global commands (may take up to 1 h to appear)", len(synced))
             return len(synced), []
         guild = discord.Object(id=self.guild_id)
         self.tree.copy_global_to(guild=guild)
         synced = await self.tree.sync(guild=guild)
-        log.info("%d commandes synchronisées sur le serveur %s", len(synced), self.guild_id)
+        log.info("%d commands synced to guild %s", len(synced), self.guild_id)
         stale = await self.tree.fetch_commands()
         if not stale:
             return len(synced), []
         self.tree.clear_commands(guild=None)
         await self.tree.sync()
         names = [command.name for command in stale]
-        log.info("%d anciennes commandes globales supprimées : %s", len(names), ", ".join(names))
+        log.info("Removed %d leftover global commands: %s", len(names), ", ".join(names))
         return len(synced), names
 
     async def on_ready(self) -> None:
-        log.info("Connecté en tant que %s (v%s)", self.user, self.version)
+        log.info("Logged in as %s (v%s)", self.user, self.version)
         if not self._ready_once:
             self._ready_once = True
             self.dispatch("first_ready")
@@ -201,7 +201,7 @@ class LittlePrincess(commands.Bot):
         await super().close()
         await self.db.close()
 
-    # -- salons & notifications -------------------------------------------------
+    # -- channels and notifications ---------------------------------------------
 
     @property
     def guild(self) -> Optional[discord.Guild]:
@@ -222,7 +222,7 @@ class LittlePrincess(commands.Bot):
         try:
             return await channel.send(*args, **kwargs)
         except discord.HTTPException as exc:
-            log.warning("Envoi impossible dans %s : %s", getattr(channel, "id", "?"), exc)
+            log.warning("Cannot send to %s: %s", getattr(channel, "id", "?"), exc)
             return None
 
     async def notify_achievements(self, user: discord.abc.User, unlocked: list[dict],
@@ -241,7 +241,7 @@ class LittlePrincess(commands.Bot):
 
     async def handle_xp_result(self, member: discord.abc.User, result: Optional[XpResult],
                                fallback: Optional[discord.abc.Messageable] = None) -> None:
-        """Annonce de montée de niveau, rôles et succès liés."""
+        """Announce a level-up, update level roles and report related achievements."""
         if result is None:
             return
         if result.leveled_up:

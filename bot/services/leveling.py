@@ -1,4 +1,4 @@
-"""XP du compte (activité Discord) et récompenses de niveau."""
+"""Account XP (Discord activity) and level rewards."""
 
 from __future__ import annotations
 
@@ -71,7 +71,7 @@ class Leveling:
         return await self.app.db.transaction(lambda conn: add_xp_sync(conn, self.cfg, user_id, amount, gold))
 
     async def on_message(self, user_id: int, rng: Optional[random.Random] = None) -> Optional[XpResult]:
-        """XP d'un message, si le cooldown anti-spam est écoulé."""
+        """XP for a message, if the anti-spam cooldown has elapsed."""
         cfg = self.cfg.leveling
         now = time.time()
         rng = rng or random.Random()

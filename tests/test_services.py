@@ -103,7 +103,7 @@ class ServicesTest(unittest.IsolatedAsyncioTestCase):
 
         await self.db.execute("INSERT INTO weapons (user_id, weapon_key, stars) VALUES (1, 'ex-119', 5)")
         await self.db.execute("INSERT INTO weapons (user_id, weapon_key, stars) VALUES (1, 'g-bow-1', 1)")
-        with self.assertRaises(GameError):   # Eunha porte un panier, pas un arc
+        with self.assertRaises(GameError):   # Eunha uses a basket, not a bow
             await self.collection.equip(1, "119", "g-bow-1")
         await self.collection.equip(1, "119", "ex-119")
         units = await self.collection.team_units(1)
@@ -136,7 +136,7 @@ class ServicesTest(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Aventurier", result.titles)
         self.assertGreater(result.rewards["gems"], 0)
         self.assertIn("level_10", [a["id"] for a in result.achievements])
-        # Réactions plafonnées par jour
+        # Reaction XP is capped per day
         total = 0
         for _ in range(100):
             await self.db.execute("UPDATE players SET last_react_xp = 0 WHERE user_id = 2")
@@ -150,7 +150,7 @@ class ServicesTest(unittest.IsolatedAsyncioTestCase):
         await self.collection.set_team(1, ["seed-plitvice", "seed-lahn"])
         await self.db.execute("INSERT INTO weapons (user_id, weapon_key, stars) VALUES (1, 'ex-seed-plitvice', 5)")
         await self.db.execute("UPDATE heroes SET weapon_key = 'ex-seed-plitvice' WHERE hero_key = 'seed-plitvice'")
-        # Simule les données de l'API : Plitvice existe sous la clé "50", Lahn n'existe pas
+        # Simulate API data: Plitvice exists under key "50", Lahn does not exist
         api_heroes = json.loads((Path(__file__).resolve().parent.parent / "bot" / "data" / "seed_heroes.json")
                                 .read_text(encoding="utf-8"))
         api = []

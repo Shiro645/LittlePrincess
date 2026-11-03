@@ -1,4 +1,4 @@
-"""Administration : /bot (version, mise à jour, synchro) et /admin (gestion des joueurs, boss)."""
+"""Administration: /bot (version, updates, sync) and /admin (player management, boss)."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ class Admin(commands.Cog):
     async def cog_unload(self) -> None:
         self.housekeeping.cancel()
 
-    # -- démarrage : annonce des nouveautés et synchro des héros ---------------
+    # -- startup: announce what's new and sync heroes ---------------------------
 
     @commands.Cog.listener()
     async def on_first_ready(self) -> None:
@@ -52,7 +52,7 @@ class Admin(commands.Cog):
         if self.bot.data.needs_sync() and os.getenv("GTALES_API_TOKEN"):
             asyncio.create_task(self.sync_heroes(notify=True))
         elif self.bot.data.source != "api":
-            log.warning("GTALES_API_TOKEN absent : le bot utilise les héros de démarrage (stats approximatives)")
+            log.warning("GTALES_API_TOKEN not set: using the seed heroes (approximate stats)")
 
     async def announce_new_version(self) -> None:
         bot = self.bot
@@ -90,7 +90,7 @@ class Admin(commands.Cog):
                 await self.bot.notify_staff(message)
             return message
         except Exception as exc:
-            log.exception("Synchronisation des héros impossible")
+            log.exception("Hero sync failed")
             if notify:
                 await self.bot.notify_staff(f"⚠️ Synchronisation des héros impossible : {exc}")
             raise GameError(f"Synchronisation impossible : {exc}") from exc
@@ -111,7 +111,7 @@ class Admin(commands.Cog):
         except GameError:
             pass
         except Exception:
-            log.exception("Erreur dans la tâche de maintenance")
+            log.exception("Housekeeping task failed")
 
     @housekeeping.before_loop
     async def before_housekeeping(self) -> None:
@@ -171,7 +171,7 @@ class Admin(commands.Cog):
             "et annoncer les nouveautés.", ephemeral=True)
         await bot.db.set_meta("update_channel", str(interaction.channel_id))
         ok, detail = await updates.trigger_watchtower(str(bot.cfg.update.watchtower_url))
-        # Si on arrive ici, le bot n'a pas été redémarré
+        # Reaching this line means the bot was not restarted
         await bot.db.set_meta("update_channel", "")
         if ok:
             await interaction.followup.send(

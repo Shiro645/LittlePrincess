@@ -1,4 +1,4 @@
-"""Point d'entrée : python -m bot"""
+"""Entry point: python -m bot"""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ async def main() -> int:
     setup_logging()
     token = os.getenv("DISCORD_TOKEN", "").strip()
     if not token:
-        log.error("DISCORD_TOKEN manquant : renseigne-le dans le fichier .env")
+        log.error("DISCORD_TOKEN is missing: set it in the .env file")
         return 1
     guild_id = int(os.getenv("GUILD_ID", "0") or 0) or None
 
@@ -32,15 +32,15 @@ async def main() -> int:
     except ConfigError as exc:
         problems = [str(exc)]
     if problems:
-        log.error("config.json invalide : %s", " | ".join(problems))
-        log.error("Le bot démarre avec les valeurs par défaut. Corrige config.json ou utilise /config.")
+        log.error("Invalid config.json: %s", " | ".join(problems))
+        log.error("Starting with default values. Fix config.json or use /config.")
         cfg = as_section(load_defaults())
     data = GameData(cfg, DATA_DIR)
     data.load()
     db = Database(DATA_DIR / "littleprincess.db")
     await db.connect()
 
-    log.info("LittlePrincess v%s — %d héros chargés (%s)", __version__, len(data.heroes), data.source)
+    log.info("LittlePrincess v%s — %d heroes loaded (%s)", __version__, len(data.heroes), data.source)
     bot = LittlePrincess(AppContext(cfg, db, data), guild_id)
     bot.config_problems = problems
     async with bot:

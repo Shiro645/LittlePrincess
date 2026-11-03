@@ -1,4 +1,4 @@
-"""Dummy : mannequin pour tester ses dégâts."""
+"""Training dummy to test damage output."""
 
 from __future__ import annotations
 

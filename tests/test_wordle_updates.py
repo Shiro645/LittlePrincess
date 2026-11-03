@@ -7,13 +7,13 @@ from bot import updates
 CHANGELOG = """# Changelog
 
 ## [1.2.0] - 2026-11-01
-- Nouveau boss
+- New boss
 
 ## [1.1.0] - 2026-10-20
-- Boutique
+- Shop
 
 ## [1.0.0] - 2026-10-14
-- Première version
+- First version
 """
 
 
@@ -46,7 +46,7 @@ class UpdatesTest(unittest.TestCase):
         self.assertEqual([v for v, _, _ in updates.changes_since(CHANGELOG, None, "1.1.0")], ["1.1.0"])
         self.assertEqual(updates.changes_since(CHANGELOG, "1.2.0", "1.2.0"), [])
         version, title, body = updates.changelog_sections(CHANGELOG)[0]
-        self.assertEqual((version, title, body), ("1.2.0", "2026-11-01", "- Nouveau boss"))
+        self.assertEqual((version, title, body), ("1.2.0", "2026-11-01", "- New boss"))
 
     def test_project_changelog_has_current_version(self):
         from bot import __version__

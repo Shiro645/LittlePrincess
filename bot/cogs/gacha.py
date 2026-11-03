@@ -1,4 +1,4 @@
-"""Invocations : /invoquer et /bannieres."""
+"""Summons: /invoquer and /bannieres."""
 
 from __future__ import annotations
 

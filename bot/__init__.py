@@ -1,3 +1,3 @@
-"""LittlePrincess — bot Discord inspiré de Guardian Tales."""
+"""LittlePrincess — a Discord bot inspired by Guardian Tales."""
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"

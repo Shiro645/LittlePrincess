@@ -1,4 +1,4 @@
-"""XP gagnée par l'activité sur le serveur et rôles de niveau."""
+"""XP earned from server activity, and level roles."""
 
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ class Leveling(commands.Cog):
         if member is None or member.bot or not self._in_guild(payload.guild_id):
             return
         if getattr(payload, "message_author_id", None) == member.id:
-            return  # pas d'XP en réagissant à ses propres messages
+            return  # no XP for reacting to your own messages
         result = await self.bot.leveling.on_reaction(member.id)
         if result is None:
             return
@@ -73,10 +73,10 @@ class Leveling(commands.Cog):
             if any(to_remove):
                 await member.remove_roles(*[r for r in to_remove if r], reason=f"Niveau {level}")
         except discord.Forbidden:
-            log.warning("Impossible de gérer les rôles de niveau : vérifie la permission « Gérer les rôles » "
-                        "et que le rôle du bot est au-dessus des rôles de niveau.")
+            log.warning("Cannot manage level roles: check the Manage Roles permission "
+                        "and that the bot's role is above the level roles.")
         except discord.HTTPException as exc:
-            log.warning("Erreur lors de l'attribution des rôles de niveau : %s", exc)
+            log.warning("Failed to assign level roles: %s", exc)
 
 
 async def setup(bot) -> None:

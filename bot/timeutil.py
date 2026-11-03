@@ -1,4 +1,4 @@
-"""Gestion du temps : fuseau de la guilde, jour de jeu, semaine."""
+"""Time helpers: guild timezone, game day, week."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def now(cfg) -> datetime:
 
 
 def game_day(cfg, when: datetime | None = None) -> date:
-    """Jour de jeu (le reset quotidien se fait à daily.reset_hour)."""
+    """Game day (the daily reset happens at daily.reset_hour)."""
     when = when or now(cfg)
     return (when - timedelta(hours=int(cfg.daily.reset_hour))).date()
 
@@ -36,7 +36,7 @@ def next_reset(cfg, when: datetime | None = None) -> datetime:
 
 
 def next_weekly(cfg, weekday: int, hour: int, minute: int, when: datetime | None = None) -> datetime:
-    """Prochaine occurrence (ou l'occurrence en cours si on est pile dessus) d'un créneau hebdo."""
+    """Next occurrence of a weekly slot (or the current one if we are right on it)."""
     when = when or now(cfg)
     candidate = when.replace(hour=hour, minute=minute, second=0, microsecond=0)
     candidate += timedelta(days=(weekday - when.weekday()) % 7)
@@ -46,7 +46,7 @@ def next_weekly(cfg, weekday: int, hour: int, minute: int, when: datetime | None
 
 
 def last_weekly(cfg, weekday: int, hour: int, minute: int, when: datetime | None = None) -> datetime:
-    """Dernière occurrence passée d'un créneau hebdo."""
+    """Last past occurrence of a weekly slot."""
     when = when or now(cfg)
     candidate = when.replace(hour=hour, minute=minute, second=0, microsecond=0)
     candidate -= timedelta(days=(when.weekday() - weekday) % 7)

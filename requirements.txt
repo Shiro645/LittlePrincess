@@ -1,4 +1,4 @@
 discord.py>=2.4,<3
 tzdata>=2024.1
-# Uniquement pour convertir un ancien config.yaml (v1.0.0) en config.json
+# Only used to convert an old config.yaml (v1.0.0) to config.json
 PyYAML>=6.0

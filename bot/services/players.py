@@ -1,4 +1,4 @@
-"""Joueurs et monnaies (gemmes, or, tickets)."""
+"""Players and currencies (gems, gold, tickets)."""
 
 from __future__ import annotations
 
@@ -60,7 +60,7 @@ def credit_sync(conn: sqlite3.Connection, user_id: int, rewards: dict) -> None:
 
 
 def debit_sync(conn: sqlite3.Connection, user_id: int, costs: dict) -> bool:
-    """Débite si le joueur a assez. Retourne False sinon (rien n'est débité)."""
+    """Debit if the player can afford it. Returns False otherwise (nothing is debited)."""
     amounts = {k: int(costs.get(k, 0) or 0) for k in CURRENCIES}
     cur = conn.execute(
         "UPDATE players SET gems = gems - :gems, gold = gold - :gold, hero_tickets = hero_tickets - :hero_tickets, "

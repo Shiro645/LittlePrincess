@@ -1,4 +1,4 @@
-"""Affichage des combats : résumé et journal détaillé paginé."""
+"""Battle display: summary and paginated detailed log."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ def log_pages(cfg, result: BattleResult, title: str) -> list[discord.Embed]:
 
 
 class LogView(discord.ui.View):
-    """Bouton « Voir le combat » qui ouvre le journal détaillé en message privé (éphémère)."""
+    """'Voir le combat' button that opens the detailed log in an ephemeral message."""
 
     def __init__(self, cfg, result: BattleResult, title: str, timeout: float = 900):
         super().__init__(timeout=timeout)

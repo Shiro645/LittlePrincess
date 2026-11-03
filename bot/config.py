@@ -1,8 +1,8 @@
-"""Configuration du bot : un seul fichier config.json, modifiable depuis Discord (/config).
+"""Bot configuration: a single config.json file, editable from Discord (/config).
 
-Le fichier par défaut (livré avec le bot) est fusionné avec celui de l'utilisateur :
-les clés absentes chez l'utilisateur prennent la valeur par défaut, ce qui permet
-d'ajouter de nouvelles options lors d'une mise à jour sans casser une config existante.
+The default file (shipped with the bot) is merged with the user's file: keys missing
+from the user's file take their default value, so new options can be added in an
+update without breaking an existing config.
 """
 
 from __future__ import annotations
@@ -23,17 +23,17 @@ HELP_FILE = Path(__file__).resolve().parent / "data" / "config_help.json"
 
 
 class ConfigError(ValueError):
-    """Valeur ou fichier de configuration invalide (message affichable)."""
+    """Invalid config value or file (the message is shown to the user)."""
 
 
 class Section(dict):
-    """Dictionnaire accessible en attributs : cfg.gacha.cost_single."""
+    """Dict with attribute access: cfg.gacha.cost_single."""
 
     def __getattr__(self, name: str) -> Any:
         try:
             return self[name]
         except KeyError as exc:
-            raise AttributeError(f"Clé de config manquante : {name}") from exc
+            raise AttributeError(f"Missing config key: {name}") from exc
 
     def __setattr__(self, name: str, value: Any) -> None:
         self[name] = value
@@ -52,12 +52,12 @@ def as_section(data: dict) -> Section:
 
 
 def plain(value: Any) -> Any:
-    """Copie profonde en dict/list ordinaires (pour modifier puis sauvegarder)."""
+    """Deep copy into plain dicts/lists (to edit and then save)."""
     return json.loads(json.dumps(value))
 
 
 def deep_merge(base: dict, override: dict) -> dict:
-    """Fusionne override dans base (récursif sur les dictionnaires, les listes sont remplacées)."""
+    """Merge override into base (recursive for dicts, lists are replaced)."""
     result = copy.deepcopy(base)
     for key, value in (override or {}).items():
         if isinstance(value, dict) and isinstance(result.get(key), dict):
@@ -68,7 +68,7 @@ def deep_merge(base: dict, override: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-#  Lecture / écriture
+#  Reading / writing
 # ---------------------------------------------------------------------------
 
 def read_json(path: Path) -> dict:
@@ -88,7 +88,7 @@ def _inline(value: Any) -> str:
 
 
 def dumps(value: Any, indent: int = 0, width: int = 110, in_list: bool = False) -> str:
-    """JSON lisible : sections dépliées, petites valeurs sur une ligne, un élément de liste par ligne."""
+    """Readable JSON: sections expanded, small values on one line, one list item per line."""
     if not isinstance(value, (dict, list)):
         return _inline(value)
     pad, inner = "  " * indent, "  " * (indent + 1)
@@ -116,7 +116,7 @@ def _depth(value: Any) -> int:
 
 
 def write_json(path: Path, data: dict, backup: bool = True) -> None:
-    """Écriture atomique ; l'ancienne version est gardée dans config.json.bak."""
+    """Atomic write; the previous version is kept in config.json.bak."""
     path.parent.mkdir(parents=True, exist_ok=True)
     if backup and path.exists():
         shutil.copyfile(path, path.with_suffix(path.suffix + ".bak"))
@@ -138,7 +138,7 @@ def _stringify_keys(value: Any) -> Any:
 
 
 def migrate_yaml(user_path: Path, defaults: dict) -> bool:
-    """v1.0.0 utilisait config.yaml : on le convertit une fois en config.json (l'ancien fichier est renommé)."""
+    """v1.0.0 used config.yaml: convert it once to config.json (the old file is renamed)."""
     legacy = user_path.with_name("config.yaml")
     if user_path.exists() or not legacy.exists():
         return False
@@ -156,7 +156,7 @@ def migrate_yaml(user_path: Path, defaults: dict) -> bool:
 
 
 def load_config(default_path: Path = DEFAULT_CONFIG, user_path: Path = USER_CONFIG) -> Section:
-    """Charge la config. Crée le fichier utilisateur (copie complète des valeurs par défaut) s'il n'existe pas."""
+    """Load the config. Create the user file (a full copy of the defaults) if it does not exist."""
     defaults = read_json(default_path)
     if default_path != user_path and not user_path.exists():
         if not migrate_yaml(user_path, defaults):
@@ -165,12 +165,12 @@ def load_config(default_path: Path = DEFAULT_CONFIG, user_path: Path = USER_CONF
 
 
 def int_keys(mapping: dict) -> dict:
-    """Les clés JSON sont des textes ('3') : on les convertit en entiers."""
+    """JSON keys are strings ('3'): convert them to ints."""
     return {int(k): v for k, v in (mapping or {}).items()}
 
 
 # ---------------------------------------------------------------------------
-#  Chemins : "gacha.pity_hero", "shop.items.0.price.gold"
+#  Paths: "gacha.pity_hero", "shop.items.0.price.gold"
 # ---------------------------------------------------------------------------
 
 def split_path(path: str) -> list[str]:
@@ -208,7 +208,7 @@ def has_path(data: Any, path: str) -> bool:
 
 
 def _is_free_map(node: dict) -> bool:
-    """Dictionnaire dont on peut ajouter des clés (ex. niveau -> rôle)."""
+    """Dict that accepts new keys (e.g. level -> role)."""
     return not node or all(re.fullmatch(r"-?\d+", str(k)) for k in node)
 
 
@@ -251,7 +251,7 @@ def delete_path(data: dict, path: str) -> Any:
 
 
 def iter_paths(data: Any, prefix: str = "") -> Iterator[tuple[str, Any]]:
-    """Tous les chemins (sections et valeurs) de la config."""
+    """Every path (sections and values) in the config."""
     items = data.items() if isinstance(data, dict) else enumerate(data) if isinstance(data, list) else ()
     for key, value in items:
         path = f"{prefix}.{key}" if prefix else str(key)
@@ -261,7 +261,7 @@ def iter_paths(data: Any, prefix: str = "") -> Iterator[tuple[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
-#  Conversion des valeurs saisies sur Discord
+#  Converting values typed on Discord
 # ---------------------------------------------------------------------------
 
 _TRUE = {"true", "vrai", "oui", "yes", "on", "1"}
@@ -285,7 +285,7 @@ def type_name(value: Any) -> str:
 
 
 def coerce_value(raw: str, current: Any) -> Any:
-    """Transforme le texte saisi en valeur du même type que la valeur actuelle."""
+    """Convert the typed text into a value of the same type as the current value."""
     text = (raw or "").strip()
     try:
         parsed: Any = json.loads(text)
@@ -327,7 +327,7 @@ def coerce_value(raw: str, current: Any) -> Any:
 # ---------------------------------------------------------------------------
 
 def validate(cfg: dict) -> list[str]:
-    """Vérifie la cohérence de la config. Retourne la liste des problèmes (vide = OK)."""
+    """Check the config for consistency. Returns the list of problems (empty = OK)."""
     from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
     errors: list[str] = []
@@ -456,14 +456,14 @@ def validate(cfg: dict) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-#  Aide (descriptions des paramètres)
+#  Help (setting descriptions)
 # ---------------------------------------------------------------------------
 
 _help_cache: Optional[dict] = None
 
 
 def help_for(path: str) -> Optional[str]:
-    """Description d'un paramètre (cherche aussi dans les sections parentes pour les éléments de liste)."""
+    """Description of a setting (falls back to parent sections for list items)."""
     global _help_cache
     if _help_cache is None:
         try:

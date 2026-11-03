@@ -1,4 +1,4 @@
-"""Logique pure des invocations (sans base de données ni Discord)."""
+"""Pure summoning logic (no database, no Discord)."""
 
 from __future__ import annotations
 
@@ -19,8 +19,8 @@ class Banner:
     id: str                 # standard | featured | weapon
     kind: str               # hero | weapon
     name: str
-    featured_hero: Optional[str] = None     # clé du héros vedette
-    featured_weapon: Optional[str] = None   # clé de l'arme vedette
+    featured_hero: Optional[str] = None     # featured hero key
+    featured_weapon: Optional[str] = None   # featured weapon key
 
 
 @dataclass
@@ -33,7 +33,7 @@ class Pull:
 
 
 def week_start(now: datetime, weekday: int, hour: int) -> datetime:
-    """Début de la « semaine de bannière » contenant `now`."""
+    """Start of the banner week containing `now`."""
     anchor = now.replace(hour=hour, minute=0, second=0, microsecond=0)
     delta_days = (now.weekday() - weekday) % 7
     start = anchor - timedelta(days=delta_days)
@@ -43,7 +43,7 @@ def week_start(now: datetime, weekday: int, hour: int) -> datetime:
 
 
 def featured_hero_key(cfg, data: GameData, now: datetime) -> Optional[str]:
-    """Héros vedette de la semaine (rotation de la config, sinon tirage déterministe)."""
+    """Featured hero of the week (config rotation, otherwise a deterministic pick)."""
     start = week_start(now, int(cfg.gacha.featured_change_weekday), int(cfg.gacha.featured_change_hour))
     week_index = (start.toordinal() // 7)
     rotation = [str(k) for k in cfg.gacha.get("featured_rotation", []) if str(k) in data.heroes]
@@ -89,7 +89,7 @@ def roll(
     pity_counter: int,
     rng: Optional[random.Random] = None,
 ) -> tuple[list[Pull], int]:
-    """Effectue `count` invocations. Retourne les tirages et le nouveau compteur de pitié."""
+    """Perform `count` summons. Returns the pulls and the new pity counter."""
     rng = rng or random.Random()
     is_hero = banner.kind == HERO
     rates = int_keys(cfg.gacha.hero_rates if is_hero else cfg.gacha.weapon_rates)
@@ -104,7 +104,7 @@ def roll(
         pity = False
         if rarity < top and pity_limit > 0 and pity_counter + 1 >= pity_limit:
             rarity, pity = top, True
-        # Garantie du x10 : le dernier tirage remonte à la rareté minimale
+        # x10 guarantee: the last pull is raised to the minimum rarity
         if count >= 10 and i == count - 1 and min_ten and all(p.rarity < min_ten for p in pulls) and rarity < min_ten:
             rarity = min_ten
         pity_counter = 0 if rarity == top else pity_counter + 1
