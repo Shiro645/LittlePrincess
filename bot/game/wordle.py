@@ -1,4 +1,4 @@
-"""Wordle de héros façon Loldle : comparaison des caractéristiques."""
+"""Loldle-style hero wordle: attribute comparison."""
 
 from __future__ import annotations
 
@@ -44,5 +44,5 @@ def compare(guess: Hero, answer: Hero) -> list[Clue]:
 def pick_answer(data: GameData, day: str, salt: str) -> str:
     keys = sorted(data.heroes)
     if not keys:
-        raise ValueError("Aucun héros chargé")
+        raise ValueError("No heroes loaded")
     return random.Random(f"{salt}-{day}").choice(keys)

@@ -1,4 +1,4 @@
-"""Wordle de héros : /wordle deviner, /wordle classement."""
+"""Hero wordle: /wordle deviner, /wordle classement."""
 
 from __future__ import annotations
 

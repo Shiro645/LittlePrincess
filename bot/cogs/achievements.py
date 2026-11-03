@@ -1,4 +1,4 @@
-"""Succès et titres : /succes, /titre."""
+"""Achievements and titles: /succes, /titre."""
 
 from __future__ import annotations
 

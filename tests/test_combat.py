@@ -50,7 +50,7 @@ class CombatTest(unittest.TestCase):
             self.assertIn(result.winner, (0, 1))
             self.assertEqual(len(result.round_logs), result.rounds)
             wins[result.winner] += 1
-        self.assertTrue(all(wins), "équipes de même niveau : chacune doit gagner parfois")
+        self.assertTrue(all(wins), "evenly matched teams: each one should win sometimes")
 
     def test_stronger_team_wins_mostly(self):
         strong = self.team(["seed-marina", "seed-plitvice", "119", "seed-nari"], 100, 5, owner=1)
@@ -76,7 +76,7 @@ class CombatTest(unittest.TestCase):
         self.assertGreater(chainer.damage["chain"], 0)
         self.assertGreater(chainer2.damage["chain"], 0)
         self.assertEqual(attacker.damage["chain"], 0)
-        # Une seule chaîne par héros et par tour
+        # Only one chain per hero per round
         before = chainer.damage["chain"]
         battle.hit(attacker, target, "na", 1.0, state="downed")
         self.assertEqual(chainer.damage["chain"], before)
@@ -119,7 +119,7 @@ class CombatTest(unittest.TestCase):
         self.assertEqual(effects[0][1], self.cfg.combat.leader_party_buff_multiplier)
         stats = unit_stats(self.cfg, units[1], effects)
         self.assertEqual(stats.bonuses["ranged_dmg"], 50 * 1.5)
-        self.assertEqual(stats.bonuses["atk"], 30)   # Earth type Atk +30% (son propre buff, s'applique à elle)
+        self.assertEqual(stats.bonuses["atk"], 30)   # Earth type Atk +30% (her own buff applies to herself)
 
     def test_exclusive_weapon_bonus(self):
         eunha = self.data.hero("119")

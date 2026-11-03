@@ -37,7 +37,7 @@ class ConfigTest(unittest.TestCase):
         self.assertTrue(user.exists())
         self.assertEqual(read_json(user), load_defaults(DEFAULT_CONFIG))
         self.assertEqual(cfg.gacha.cost_single, 300)
-        # Un fichier partiel est complété par les valeurs par défaut (ex. après une mise à jour)
+        # A partial file is completed with defaults (e.g. after an update)
         user.write_text(json.dumps({"gacha": {"cost_single": 100}}), encoding="utf-8")
         cfg = load_config(DEFAULT_CONFIG, user)
         self.assertEqual(cfg.gacha.cost_single, 100)
@@ -87,20 +87,20 @@ class ConfigTest(unittest.TestCase):
         set_path(data, "gacha.pity_hero", 60)
         self.assertEqual(data["gacha"]["pity_hero"], 60)
         with self.assertRaises(ConfigError):
-            set_path(data, "gacha.pity_heros", 60)          # faute de frappe
+            set_path(data, "gacha.pity_heros", 60)          # typo
         with self.assertRaises(ConfigError):
             get_path(data, "shop.items.99")
-        # Les dictionnaires « niveau -> valeur » acceptent de nouvelles clés
+        # 'level -> value' dicts accept new keys
         set_path(data, "leveling.level_roles.10", 1234)
         self.assertEqual(data["leveling"]["level_roles"], {"10": 1234})
         self.assertEqual(delete_path(data, "leveling.level_roles.10"), 1234)
-        # Ajout en fin de liste avec l'index = longueur
+        # Append to a list with index == length
         n = len(data["shop"]["items"])
         set_path(data, f"shop.items.{n}", {"id": "x"})
         self.assertEqual(data["shop"]["items"][-1], {"id": "x"})
         self.assertEqual(delete_path(data, f"shop.items.{n}"), {"id": "x"})
         with self.assertRaises(ConfigError):
-            delete_path(data, "gacha.cost_single")          # clé fixe : on réinitialise, on ne supprime pas
+            delete_path(data, "gacha.cost_single")          # fixed key: reset it, don't delete it
         paths = dict(iter_paths(data))
         self.assertIn("boss.roster.0.attacks.0.hp_pct", paths)
 
@@ -132,10 +132,10 @@ class ConfigTest(unittest.TestCase):
     def test_help(self):
         self.assertIn("gemmes", help_for("gacha.cost_single"))
         self.assertTrue(help_for("boss"))
-        self.assertTrue(help_for("boss.roster.2.attacks"))   # remonte à la description de la liste
+        self.assertTrue(help_for("boss.roster.2.attacks"))   # falls back to the list's description
         self.assertIsNone(help_for("inexistant.cle"))
         defaults = load_defaults(DEFAULT_CONFIG)
-        self.assertEqual([k for k in defaults if not help_for(k)], [], "chaque section doit être décrite")
+        self.assertEqual([k for k in defaults if not help_for(k)], [], "every section must have a description")
 
 
 if __name__ == "__main__":

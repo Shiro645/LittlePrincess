@@ -1,4 +1,4 @@
-"""Colisée : duels en direct entre joueurs, combat simulé, mise de gemmes."""
+"""Colosseum: live duels between players, simulated fight, gem bets."""
 
 from __future__ import annotations
 

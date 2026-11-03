@@ -1,4 +1,4 @@
-"""Boss du samedi : raid en direct au tour par tour, puis rattrapage en solo."""
+"""Saturday boss: live turn-based raid, then a solo catch-up window."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ from ._common import bot_of
 
 log = logging.getLogger(__name__)
 
-LIVE_GRACE = timedelta(minutes=30)   # si le bot démarre en retard, le raid live peut encore commencer
+LIVE_GRACE = timedelta(minutes=30)   # if the bot starts late, the live raid can still begin
 ACTION_LABELS = {ACTION_ATTACK: "⚔️ Attaque", ACTION_SKILL: "✨ Compétence", ACTION_GUARD: "🛡️ Garde",
                  ACTION_AUTO: "🤖 Auto"}
 ACTION_HELP = ("⚔️ **Attaque** : attaque normale renforcée, sans compétence · ✨ **Compétence** : les compétences "
@@ -66,7 +66,7 @@ def boss_embed(cfg, boss: dict, hp: int, hp_max: int, title: str = "", descripti
 
 
 class Raid:
-    """État en mémoire d'un raid en direct."""
+    """In-memory state of a live raid."""
 
     def __init__(self, cog: "Boss", event_id: int, boss: dict, hp: int, hp_max: int):
         self.cog = cog
@@ -134,7 +134,7 @@ class Raid:
         return f"✅ Inscrit ! Ton équipe rejoint le combat (+{num(added)} PV pour le boss)."
 
     def resolve_turn(self) -> tuple[list[str], list[str], dict[int, int]]:
-        """Résout un tour : actions des joueurs puis riposte du boss."""
+        """Resolve one turn: player actions, then the boss strikes back."""
         cfg = self.cog.bot.cfg
         battle = self.battle
         battle.start_round()
@@ -237,7 +237,7 @@ class Boss(commands.Cog):
     def cfg(self):
         return self.bot.cfg
 
-    # -- PV adaptatifs ------------------------------------------------------
+    # -- adaptive HP -------------------------------------------------------
 
     async def hp_for(self, specs, boss: dict) -> int:
         cfg = self.cfg.boss
@@ -248,7 +248,7 @@ class Boss(commands.Cog):
             None, estimate_damage, self.cfg, specs, int(cfg.max_turns), boss.get("element"), int(boss.get("defense", 500)))
         return max(1, int(estimate * float(cfg.difficulty)))
 
-    # -- planification --------------------------------------------------------
+    # -- scheduling ---------------------------------------------------------
 
     def boss_for(self, start: datetime) -> dict:
         roster = self.cfg.boss.roster
@@ -269,7 +269,7 @@ class Boss(commands.Cog):
         try:
             await self._tick()
         except Exception:
-            log.exception("Erreur dans la boucle du boss")
+            log.exception("Boss loop failed")
 
     @tick.before_loop
     async def before_tick(self) -> None:
@@ -317,16 +317,16 @@ class Boss(commands.Cog):
                 self.cfg, boss, 0, 0, f"👹 {boss['name']} est apparu !",
                 f"Le raid en direct est passé, mais tu peux l'affronter en solo avec `/boss solo` jusqu'à "
                 f"{timeutil.discord_ts(solo_end, 'F')}."))
-        log.info("Boss %s ouvert (semaine %s, live=%s)", boss["id"], week, live)
+        log.info("Boss %s opened (week %s, live=%s)", boss["id"], week, live)
         return event_id
 
-    # -- raid en direct -------------------------------------------------------
+    # -- live raid ----------------------------------------------------------
 
     async def run_raid(self, raid: Raid, solo_end: datetime) -> None:
         try:
             await self._run_raid(raid, solo_end)
         except Exception:
-            log.exception("Erreur pendant le raid")
+            log.exception("Raid failed")
             await self.bot.db.execute("UPDATE boss_events SET status = 'solo' WHERE id = ? AND status = 'live'",
                                       (raid.event_id,))
         finally:
@@ -337,7 +337,7 @@ class Boss(commands.Cog):
         bot = self.bot
         channel = bot.channel("boss")
         if channel is None:
-            log.warning("channels.boss non configuré : le raid live est annulé, rattrapage solo ouvert")
+            log.warning("channels.boss is not set: live raid cancelled, solo catch-up opened")
             await bot.db.execute("UPDATE boss_events SET status = 'solo' WHERE id = ?", (raid.event_id,))
             return
         join_end = timeutil.now(self.cfg) + timedelta(seconds=int(cfg.join_seconds))
@@ -355,7 +355,7 @@ class Boss(commands.Cog):
                 raid.thread = await message.create_thread(name=f"Raid — {raid.boss['name']}"[:100],
                                                           auto_archive_duration=1440)
             except discord.HTTPException as exc:
-                log.warning("Impossible de créer le fil du raid : %s", exc)
+                log.warning("Cannot create the raid thread: %s", exc)
 
         await asyncio.sleep(int(cfg.join_seconds))
         if not raid.participants:
@@ -419,7 +419,7 @@ class Boss(commands.Cog):
                          (raid.fighter.hp, int(not raid.fighter.alive), raid.event_id))
         await self.bot.db.transaction(_tx)
 
-    # -- fin et récompenses -------------------------------------------------
+    # -- end and rewards ----------------------------------------------------
 
     async def finalize(self, event_id: int) -> None:
         bot = self.bot
@@ -462,7 +462,7 @@ class Boss(commands.Cog):
             if user and achs:
                 await bot.notify_achievements(user, achs, bot.channel("boss"))
 
-    # -- commandes ----------------------------------------------------------
+    # -- commands ----------------------------------------------------------
 
     @boss.command(name="info", description="Le boss en cours ou le prochain")
     async def info(self, interaction: discord.Interaction) -> None:
@@ -504,7 +504,7 @@ class Boss(commands.Cog):
         await interaction.response.defer(thinking=True)
         boss = boss_def(cfg, event["boss_id"])
         specs = build_specs(cfg, units, user_id)
-        # Boss déjà vaincu : le combat compte pour la participation, sans ajouter de PV
+        # Boss already defeated: the fight counts for participation without adding HP
         added = 0 if event["killed"] else await self.hp_for(specs, boss)
         hp_max, hp = event["hp_max"] + added, event["hp"] + added
         fighter = boss_fighter(boss, hp if hp > 0 else hp_max or 1, hp_max or 1)
@@ -567,7 +567,7 @@ class Boss(commands.Cog):
         await interaction.response.send_message(embed=ui.embed(bot.cfg, f"👹 Classement — {boss['name']}",
                                                                "\n".join(lines) or "Aucun participant."))
 
-    # -- utilisé par /admin ------------------------------------------------------
+    # -- used by /admin ---------------------------------------------------------
 
     async def admin_start(self) -> str:
         if await self.current_event():

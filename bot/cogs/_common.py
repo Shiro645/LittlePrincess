@@ -1,4 +1,4 @@
-"""Outils communs aux cogs : autocomplétion, résolution des héros/armes."""
+"""Shared cog helpers: autocomplete and hero/weapon lookup."""
 
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ def resolve_weapon(bot: "LittlePrincess", value: str) -> WeaponDef:
 
 
 def staff_only():
-    """Décorateur : réservé aux administrateurs et au rôle staff."""
+    """Decorator: restrict a command to administrators and staff roles."""
 
     async def predicate(interaction: discord.Interaction) -> bool:
         from ..client import is_staff

@@ -1,4 +1,4 @@
-"""Libellés, emojis et embeds communs."""
+"""Shared labels, emojis and embeds."""
 
 from __future__ import annotations
 
@@ -70,7 +70,7 @@ def num(n: int) -> str:
 
 
 def chunk_lines(lines: list[str], limit: int = 3900) -> list[str]:
-    """Découpe une liste de lignes en blocs de moins de `limit` caractères."""
+    """Split lines into chunks shorter than `limit` characters."""
     pages, current = [], ""
     for line in lines:
         if len(current) + len(line) + 1 > limit and current:

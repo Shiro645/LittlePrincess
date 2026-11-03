@@ -59,7 +59,7 @@ class GachaTest(unittest.TestCase):
         pulls, pity = gacha.roll(cfg, self.data, self.banners["standard"], 1, cfg.gacha.pity_hero - 1, random.Random(0))
         self.assertEqual(pulls[0].rarity, 3)
         self.assertEqual(pity, 0)
-        # Sans 3★, le compteur avance
+        # Without a 3★, the counter goes up
         _, pity = gacha.roll(cfg, self.data, self.banners["standard"], 1, 5, _NoTopRng())
         self.assertEqual(pity, 6)
 
@@ -77,7 +77,7 @@ class GachaTest(unittest.TestCase):
         three = [p for p in pulls if p.rarity == 3]
         share = sum(1 for p in three if p.key == featured) / len(three)
         self.assertGreater(share, 0.4)
-        # Même semaine -> même héros vedette
+        # Same week -> same featured hero
         later = gacha.banners(self.cfg, self.data, self.now.replace(day=16))
         self.assertEqual(later["featured"].featured_hero, featured)
 
@@ -94,7 +94,7 @@ class GachaTest(unittest.TestCase):
 
 
 class _NoTopRng(random.Random):
-    """Ne tire jamais la rareté maximale."""
+    """Never rolls the top rarity."""
 
     def uniform(self, a, b):
         return b * 0.999

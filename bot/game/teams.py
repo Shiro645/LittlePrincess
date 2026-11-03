@@ -1,4 +1,4 @@
-"""Construction des stats de combat d'une équipe à partir des héros possédés."""
+"""Build a team's combat stats from the heroes a player owns."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ def _apply(acc: dict, effect: Effect, element: str) -> None:
 
 
 def unit_stats(cfg, unit: OwnedUnit, party: list[tuple[Effect, float]] = ()) -> UnitStats:
-    """Stats d'un héros (niveau, étoiles, arme, buffs reçus)."""
+    """Stats of a hero (level, stars, weapon, received buffs)."""
     hero = unit.hero
     acc: dict = defaultdict(float)
     acc["dmg_vs"] = defaultdict(float)
@@ -75,7 +75,7 @@ def unit_stats(cfg, unit: OwnedUnit, party: list[tuple[Effect, float]] = ()) -> 
 
 
 def party_effects(cfg, units: list[OwnedUnit]) -> list[tuple[Effect, float]]:
-    """Buffs d'équipe de tous les membres ; celui du leader (1er) est renforcé."""
+    """Party buffs of every member; the leader's (first) buff is boosted."""
     leader_mult = float(cfg.combat.leader_party_buff_multiplier)
     effects: list[tuple[Effect, float]] = []
     for index, unit in enumerate(units):
@@ -122,7 +122,7 @@ def build_specs(cfg, units: list[OwnedUnit], owner_id: int = 0) -> list[FighterS
 
 
 def power(cfg, units: list[OwnedUnit]) -> int:
-    """Indicateur de puissance (pour l'affichage)."""
+    """Power score (for display)."""
     party = party_effects(cfg, units)
     total = 0
     for unit in units:

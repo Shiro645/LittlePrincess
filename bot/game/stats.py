@@ -1,4 +1,4 @@
-"""Calcul des stats selon le niveau et les étoiles, coûts d'amélioration, XP."""
+"""Stat scaling by level and stars, upgrade costs, account XP."""
 
 from __future__ import annotations
 
@@ -27,12 +27,12 @@ def star_factor(cfg, stars: int) -> float:
 
 
 def scale(cfg, base: float, level: int, stars: int) -> int:
-    """Stat de l'API (niveau max, 5★) ramenée au niveau et aux étoiles actuels."""
+    """Scale an API stat (max level, 5★) down to the current level and stars."""
     return int(round(base * level_factor(cfg, level) * star_factor(cfg, stars)))
 
 
 def level_cost(cfg, level: int, kind: str = "hero") -> int:
-    """Or nécessaire pour passer du niveau `level` à `level + 1`."""
+    """Gold needed to go from `level` to `level + 1`."""
     c = cfg.progression.hero_level_cost if kind == "hero" else cfg.progression.weapon_level_cost
     return int(round(c.base + c.mult * (level ** c.exponent)))
 
@@ -42,7 +42,7 @@ def cost_to_level(cfg, current: int, target: int, kind: str = "hero") -> int:
 
 
 def affordable_levels(cfg, current: int, cap: int, gold: int, wanted: int, kind: str = "hero") -> tuple[int, int]:
-    """Nombre de niveaux qu'on peut payer (≤ wanted, ≤ cap) et leur coût."""
+    """Number of levels that can be paid for (≤ wanted, ≤ cap) and their cost."""
     levels, spent = 0, 0
     lvl = current
     while levels < wanted and lvl < cap:
@@ -55,7 +55,7 @@ def affordable_levels(cfg, current: int, cap: int, gold: int, wanted: int, kind:
     return levels, spent
 
 
-# -- XP du compte --------------------------------------------------------------
+# -- account XP --------------------------------------------------------------
 
 def xp_to_next(cfg, level: int) -> int:
     c = cfg.leveling.xp_curve
@@ -63,7 +63,7 @@ def xp_to_next(cfg, level: int) -> int:
 
 
 def apply_xp(cfg, level: int, xp: int, gained: int) -> tuple[int, int, list[int]]:
-    """Ajoute de l'XP. Retourne (niveau, xp dans le niveau, niveaux atteints)."""
+    """Add XP. Returns (level, xp within the level, levels reached)."""
     xp += gained
     reached: list[int] = []
     while xp >= xp_to_next(cfg, level):

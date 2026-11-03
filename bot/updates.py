@@ -1,4 +1,4 @@
-"""Versions, changelog et mise à jour via Watchtower."""
+"""Versions, changelog and updates through Watchtower."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def extract_version(source: str) -> Optional[str]:
 
 
 def changelog_sections(text: str) -> list[tuple[str, str, str]]:
-    """Retourne [(version, titre, contenu)] dans l'ordre du fichier."""
+    """Return [(version, title, body)] in file order."""
     matches = list(_SECTION_RE.finditer(text))
     sections = []
     for i, match in enumerate(matches):
@@ -40,7 +40,7 @@ def changelog_sections(text: str) -> list[tuple[str, str, str]]:
 
 
 def changes_since(text: str, since: Optional[str], current: str) -> list[tuple[str, str, str]]:
-    """Sections du changelog entre `since` (exclu) et `current` (inclus)."""
+    """Changelog sections between `since` (excluded) and `current` (included)."""
     result = []
     for version, title, body in changelog_sections(text):
         if is_newer(version, current):
@@ -68,13 +68,13 @@ async def fetch_remote_version(repository: str, branch: str, user_agent: str) ->
     async with aiohttp.ClientSession(timeout=timeout, headers={"User-Agent": user_agent}, trust_env=True) as session:
         async with session.get(url) as resp:
             if resp.status != 200:
-                log.warning("Vérification de version : HTTP %s sur %s", resp.status, url)
+                log.warning("Version check: HTTP %s on %s", resp.status, url)
                 return None
             return extract_version(await resp.text())
 
 
 async def trigger_watchtower(url: str, timeout_s: float = 600) -> tuple[bool, str]:
-    """Demande à Watchtower de mettre à jour le bot. Le bot sera probablement arrêté pendant l'appel."""
+    """Ask Watchtower to update the bot. The bot will most likely be stopped during the call."""
     import aiohttp
 
     token = os.getenv("WATCHTOWER_TOKEN", "").strip()

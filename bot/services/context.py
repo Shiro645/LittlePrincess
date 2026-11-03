@@ -1,4 +1,4 @@
-"""Contexte partagé par les services : config, base de données, données de jeu."""
+"""Context shared by the services: config, database, game data."""
 
 from __future__ import annotations
 

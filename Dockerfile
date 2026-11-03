@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY bot ./bot
 COPY CHANGELOG.md ./CHANGELOG.md
-# Config par défaut : copiée dans /app/config au 1er démarrage si absente
+# Default config: copied to /app/config on first start if missing
 COPY config/config.json ./defaults/config.json
 
 VOLUME ["/app/config", "/app/data"]

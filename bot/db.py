@@ -1,8 +1,8 @@
-"""Base SQLite asynchrone.
+"""Async SQLite database.
 
-Toutes les requêtes passent par un unique thread dédié : les opérations sont
-donc sérialisées, et `transaction()` exécute une fonction complète de manière
-atomique (BEGIN … COMMIT), sans risque de double dépense de gemmes.
+Every query runs on a single dedicated thread, so operations are serialized and
+`transaction()` runs a whole function atomically (BEGIN … COMMIT): no risk of
+spending the same gems twice.
 """
 
 from __future__ import annotations
@@ -179,7 +179,7 @@ class Database:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(self._executor, fn, *args)
 
-    # -- cycle de vie -------------------------------------------------------
+    # -- lifecycle --------------------------------------------------------
 
     async def connect(self) -> None:
         def _connect() -> None:
@@ -192,12 +192,12 @@ class Database:
             conn.executescript(SCHEMA)
             current = conn.execute("PRAGMA user_version").fetchone()[0]
             if current < SCHEMA_VERSION:
-                # Les futures migrations iront ici (if current < 2: ...)
+                # Future migrations go here (if current < 2: ...)
                 conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
             self._conn = conn
 
         await self._run(_connect)
-        log.info("Base de données ouverte : %s", self.path)
+        log.info("Database opened: %s", self.path)
 
     async def close(self) -> None:
         if self._conn is not None:
@@ -206,16 +206,16 @@ class Database:
             await self._run(conn.close)
         self._executor.shutdown(wait=False)
 
-    # -- requêtes -----------------------------------------------------------
+    # -- queries ------------------------------------------------------------
 
     @property
     def conn(self) -> sqlite3.Connection:
         if self._conn is None:
-            raise RuntimeError("Base de données non connectée")
+            raise RuntimeError("Database is not connected")
         return self._conn
 
     async def execute(self, sql: str, params: tuple | dict = ()) -> int:
-        """Exécute une requête, retourne le nombre de lignes modifiées."""
+        """Run a statement and return the number of affected rows."""
         return await self._run(lambda: self.conn.execute(sql, params).rowcount)
 
     async def insert(self, sql: str, params: tuple | dict = ()) -> int:
@@ -232,7 +232,7 @@ class Database:
         return row[0] if row is not None and row[0] is not None else default
 
     async def transaction(self, fn: Callable[[sqlite3.Connection], T]) -> T:
-        """Exécute fn(conn) dans une transaction. Une exception annule tout."""
+        """Run fn(conn) in a transaction. Any exception rolls everything back."""
 
         def _tx() -> T:
             conn = self.conn
@@ -247,7 +247,7 @@ class Database:
 
         return await self._run(_tx)
 
-    # -- méta (clé / valeur) --------------------------------------------------
+    # -- meta (key / value) --------------------------------------------------
 
     async def get_meta(self, key: str, default: Optional[str] = None) -> Optional[str]:
         return await self.fetchval("SELECT value FROM meta WHERE key = ?", (key,), default)

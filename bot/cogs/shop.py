@@ -1,4 +1,4 @@
-"""Boutique et dons entre joueurs : /boutique, /donner."""
+"""Shop and gifts between players: /boutique, /donner."""
 
 from __future__ import annotations
 

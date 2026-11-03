@@ -1,8 +1,14 @@
 # Changelog
 
-Chaque section est annoncée automatiquement sur Discord (salon `channels.announcements`)
-après une mise à jour du bot. Pour une nouvelle version : augmente `__version__` dans
-`bot/__init__.py` et ajoute une section en haut de ce fichier.
+<!-- Each section is posted on Discord (channels.announcements) after an update, so entries are
+written in French for the players. To release: bump __version__ in bot/__init__.py and add a
+section at the top of this file. -->
+
+## [1.2.0] - Panneau de configuration
+- ⚙️ **Nouveau panneau de configuration** : `/config panneau` publie un message interactif pour régler tout le bot (menus, boutons, formulaires)
+- #️⃣ Les salons et les rôles se choisissent directement dans les menus de Discord, plus besoin de copier des identifiants
+- 🔘 Les options oui/non s'activent en un clic, les listes (boutique, boss, succès…) peuvent être complétées depuis le panneau
+- 🧹 Les anciennes commandes `/config voir`, `modifier`, `salon`… sont remplacées par le panneau (`exporter` et `importer` restent)
 
 ## [1.1.1] - Correctif des commandes
 - 🧹 Les anciennes commandes `/` d'un précédent bot (même application Discord) sont supprimées au démarrage

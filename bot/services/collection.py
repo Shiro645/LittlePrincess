@@ -1,4 +1,4 @@
-"""Collection des joueurs : héros, armes, équipe, améliorations."""
+"""Player collections: heroes, weapons, team, upgrades."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 
 class GameError(Exception):
-    """Erreur affichable telle quelle au joueur."""
+    """Error whose message is shown to the player as is."""
 
 
 @dataclass
@@ -65,7 +65,7 @@ class Collection:
     def data(self):
         return self.app.data
 
-    # -- lecture ------------------------------------------------------------
+    # -- reading ------------------------------------------------------------
 
     async def heroes(self, user_id: int) -> list[sqlite3.Row]:
         rows = await self.app.db.fetchall("SELECT * FROM heroes WHERE user_id = ?", (user_id,))
@@ -105,7 +105,7 @@ class Collection:
             units.append(unit)
         return units
 
-    # -- équipe -------------------------------------------------------------
+    # -- team ---------------------------------------------------------------
 
     async def team_keys(self, user_id: int) -> list[str]:
         rows = await self.app.db.fetchall("SELECT hero_key FROM team WHERE user_id = ? ORDER BY slot", (user_id,))
@@ -134,10 +134,10 @@ class Collection:
                              [(user_id, i, k) for i, k in enumerate(keys)])
         await self.app.db.transaction(_tx)
 
-    # -- améliorations --------------------------------------------------------
+    # -- upgrades ------------------------------------------------------------
 
     async def level_up(self, user_id: int, kind: str, key: str, wanted: int) -> LevelUpResult:
-        """Monte un héros (kind='hero') ou une arme (kind='weapon') de `wanted` niveaux (selon l'or)."""
+        """Level up a hero (kind='hero') or weapon (kind='weapon') by up to `wanted` levels (gold permitting)."""
         table, key_col = ("heroes", "hero_key") if kind == "hero" else ("weapons", "weapon_key")
 
         def _tx(conn):
@@ -163,7 +163,7 @@ class Collection:
         return await self.app.db.transaction(_tx)
 
     async def equip(self, user_id: int, hero_key: str, weapon_key: str) -> Optional[str]:
-        """Équipe une arme. Retourne le nom du héros qui la portait avant (s'il y en a un)."""
+        """Equip a weapon. Returns the name of the hero who held it before (if any)."""
         hero = self.data.hero(hero_key)
         weapon = self.data.weapon(weapon_key)
         if hero is None or weapon is None:
@@ -205,10 +205,10 @@ class Collection:
         conn.execute("UPDATE heroes SET stars = stars + 1 WHERE user_id = ? AND hero_key = ?", (user_id, hero_key))
         return row["stars"] + 1
 
-    # -- migration des héros de démarrage --------------------------------------
+    # -- seed hero migration ------------------------------------------------
 
     async def migrate_seed_heroes(self) -> int:
-        """Après la 1re synchro API : remplace les héros de démarrage par les vrais (même nom)."""
+        """After the first API sync: replace seed heroes with the real ones (same name)."""
         hero_rows = await self.app.db.fetchall("SELECT * FROM heroes WHERE hero_key LIKE 'seed-%'")
         weapon_rows = await self.app.db.fetchall("SELECT * FROM weapons WHERE weapon_key LIKE 'ex-seed-%'")
         if not hero_rows and not weapon_rows:
@@ -248,5 +248,5 @@ class Collection:
             return moved
 
         moved = await self.app.db.transaction(_tx)
-        log.info("%d héros de démarrage migrés vers les données de l'API", moved)
+        log.info("Migrated %d seed heroes to API data", moved)
         return moved

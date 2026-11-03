@@ -1,6 +1,6 @@
-"""Test de fumée : tous les cogs se chargent et les commandes sont valides pour Discord.
+"""Smoke test: every cog loads and all commands are valid for Discord.
 
-Nécessite discord.py (installé en CI via requirements.txt).
+Requires discord.py (installed in CI through requirements.txt).
 """
 
 import importlib.util
@@ -16,7 +16,7 @@ EXPECTED = {"aide", "profil", "classement", "invoquer", "bannieres", "heros", "a
             "wordle", "colisee", "boss", "dummy", "boutique", "donner", "succes", "titre", "bot", "admin", "config"}
 
 
-@unittest.skipUnless(HAS_DISCORD, "discord.py non installé")
+@unittest.skipUnless(HAS_DISCORD, "discord.py is not installed")
 class DiscordSmokeTest(unittest.IsolatedAsyncioTestCase):
     async def test_cogs_load_and_commands_serialize(self):
         from discord import app_commands
@@ -61,7 +61,7 @@ class DiscordSmokeTest(unittest.IsolatedAsyncioTestCase):
         await bot.close()
 
 
-@unittest.skipUnless(HAS_DISCORD, "discord.py non installé")
+@unittest.skipUnless(HAS_DISCORD, "discord.py is not installed")
 class CommandSyncTest(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         from bot.client import EXTENSIONS, LittlePrincess
@@ -89,12 +89,12 @@ class CommandSyncTest(unittest.IsolatedAsyncioTestCase):
         count, removed = await self.bot.sync_commands()
         self.assertGreaterEqual(count, 20)
         self.assertEqual(removed, ["ancienne", "vieux"])
-        self.assertEqual(tree.sync.await_count, 2)               # serveur puis global (vidé)
-        self.assertEqual(tree.get_commands(), [])                 # plus aucune commande globale
+        self.assertEqual(tree.sync.await_count, 2)               # guild, then global (emptied)
+        self.assertEqual(tree.get_commands(), [])                 # no global commands left
         guild_names = {c.name for c in tree.get_commands(guild=SimpleNamespace(id=123))}
-        self.assertIn("invoquer", guild_names)                   # nos commandes restent sur le serveur
+        self.assertIn("invoquer", guild_names)                   # our commands stay on the guild
 
-        # Deuxième synchro (/bot commandes) : rien à nettoyer, les commandes du serveur sont conservées
+        # Second sync (/bot commandes): nothing to clean, guild commands are kept
         tree.sync.reset_mock()
         tree.fetch_commands = AsyncMock(return_value=[])
         count2, removed2 = await self.bot.sync_commands()

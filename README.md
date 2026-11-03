@@ -1,244 +1,254 @@
 # LittlePrincess
 
-Un bot Discord pour la guilde, inspiré de **Guardian Tales** : invocations, collection de héros et d'armes,
-progression par l'activité, wordle de héros, duels au colisée, boss du samedi, dummy, boutique et succès.
+A Discord bot for a **Guardian Tales** guild: summons, hero and weapon collection, activity-based progression,
+a hero wordle, colosseum duels, a Saturday raid boss, a training dummy, a shop and achievements.
 
-> Données des héros : **[Guardian Tales TOP](https://gtales.top)** (merci à eux !).
-> Projet de fans, non affilié à Kakao Games / Kong Studios.
+The bot talks to players in **French**; the code and this documentation are in English.
 
----
-
-## Sommaire
-
-1. [Fonctionnalités](#fonctionnalités)
-2. [Créer le bot sur le Discord Developer Portal](#1-créer-le-bot-sur-le-discord-developer-portal)
-3. [Obtenir le token de l'API gtales.top](#2-obtenir-le-token-de-lapi-gtalestop)
-4. [Publier l'image Docker](#3-publier-limage-docker-github)
-5. [Installer le bot sur le NAS](#4-installer-le-bot-sur-le-nas)
-6. [Configurer le jeu](#5-configurer-le-jeu-configjson--config)
-7. [Mettre à jour le bot](#6-mettre-à-jour-le-bot-bot-update)
-8. [Commandes](#commandes)
-9. [Règles du jeu](#règles-du-jeu)
-10. [Sauvegarde et dépannage](#sauvegarde)
+> Hero data: **[Guardian Tales TOP](https://gtales.top)** (thanks to them!).
+> Fan project, not affiliated with Kakao Games / Kong Studios.
 
 ---
 
-## Fonctionnalités
+## Contents
+
+1. [Features](#features)
+2. [Create the bot on the Discord Developer Portal](#1-create-the-bot-on-the-discord-developer-portal)
+3. [Get a gtales.top API token](#2-get-a-gtalestop-api-token)
+4. [Publish the Docker image](#3-publish-the-docker-image-github)
+5. [Install the bot on a NAS](#4-install-the-bot-on-a-nas)
+6. [Configure the game](#5-configure-the-game-configuration-panel)
+7. [Update the bot](#6-update-the-bot-bot-update)
+8. [Commands](#commands)
+9. [Game rules](#game-rules)
+10. [Backups, troubleshooting, development](#backups)
+
+---
+
+## Features
 
 | | |
 |---|---|
-| 🎰 **Gacha** | Bannière standard, bannière vedette (change chaque semaine), bannière d'armes. Taux officiels de GT, 3★ (ou arme 5★) garanti au bout de 80 invocations. |
-| 🦸 **Collection** | Un doublon = +1★ (jusqu'à 5★, au-delà converti en un peu de gemmes et d'or). Niveaux achetés avec de l'or, niveau max fixé par les étoiles. Armes génériques par type + armes exclusives 5★. |
-| 👥 **Équipe** | 4 héros, le 1er est le leader (son buff d'équipe est renforcé). |
-| 📅 **Quotidien** | `/daily` avec série sur 7 jours, 3 missions quotidiennes et 3 hebdomadaires. |
-| 📈 **Progression** | XP par message (anti-spam), par réaction et via les mini-jeux. Gemmes et or à chaque niveau, rôles automatiques, titres, annonce. |
-| 🧩 **Wordle** | Façon Loldle : un héros du jour commun à tous, indices par caractéristique, réponses privées. |
-| ⚔️ **Colisée** | Duel en direct contre un membre, combat simulé automatiquement, mise de gemmes. |
-| 👹 **Boss** | Chaque samedi à 18h : raid en direct au tour par tour (boutons), puis rattrapage solo jusqu'au dimanche soir. PV adaptés au niveau de la guilde. |
-| 🎯 **Dummy** | Teste les dégâts de ton équipe ou d'un héros, détail par compétence, classement. |
-| 🛒 **Divers** | Boutique, dons plafonnés, succès, titres, salons dédiés, `/bot update` avec annonce des nouveautés. |
+| 🎰 **Gacha** | Standard banner, weekly featured banner, weapon banner. Official GT rates; a 3★ (or 5★ weapon) is guaranteed after 80 summons. |
+| 🦸 **Collection** | A duplicate gives +1★ (up to 5★, then converted into a few gems and gold). Levels are bought with gold, the level cap depends on stars. Generic weapons per type + 5★ exclusive weapons. |
+| 👥 **Team** | 4 heroes; the first one is the leader (their party buff is boosted). |
+| 📅 **Daily** | `/daily` with a 7-day streak, 3 daily and 3 weekly missions. |
+| 📈 **Progression** | XP per message (anti-spam), per reaction and from mini-games. Gems and gold on level-up, automatic roles, titles, announcements. |
+| 🧩 **Wordle** | Loldle style: one hero of the day for everyone, per-attribute hints, private answers. |
+| ⚔️ **Colosseum** | Live duel against a member, automatically simulated fight, gem bets. |
+| 👹 **Boss** | Every Saturday at 18:00: live turn-based raid (buttons), then a solo catch-up until Sunday night. HP adapts to the guild's strength. |
+| 🎯 **Dummy** | Test the damage of your team or of one hero, per-skill breakdown, leaderboard. |
+| ⚙️ **Configuration panel** | Every game value lives in one `config.json`, edited from an interactive panel posted by the bot. |
+| 🛒 **Misc** | Shop, capped gifts, achievements, titles, dedicated channels, `/bot update` with a changelog announcement. |
 
 ---
 
-## 1. Créer le bot sur le Discord Developer Portal
+## 1. Create the bot on the Discord Developer Portal
 
-1. Va sur <https://discord.com/developers/applications> → **New Application** → nomme-la (ex. *LittlePrincess*).
-2. Onglet **Installation** : mets **Install Link** sur **None** (sinon l'étape 3 refuse de décocher *Public Bot*).
-3. Onglet **Bot** :
-   - **Reset Token** → copie le token : c'est le mot de passe du bot, il ira dans `.env` (`DISCORD_TOKEN`). Ne le partage jamais.
-   - Décoche **Public Bot** (personne d'autre ne pourra l'ajouter).
-   - **Privileged Gateway Intents** : active **Server Members Intent**. Les deux autres (*Presence*, *Message Content*) restent désactivés : le bot n'utilise que des commandes `/`.
-4. Onglet **OAuth2** → **URL Generator** :
-   - Scopes : `bot` et `applications.commands`
-   - Permissions : *View Channels*, *Send Messages*, *Send Messages in Threads*, *Create Public Threads*,
-     *Embed Links*, *Attach Files*, *Read Message History*, *Add Reactions*, *Use External Emojis*,
-     *Manage Roles* (rôles de niveau), *Mention Everyone* (mention du rôle boss)
-   - Ouvre le lien généré en bas de page et choisis ton serveur.
-5. Sur ton serveur : **Paramètres du serveur → Rôles**, glisse le rôle du bot **au-dessus** des rôles de niveau qu'il doit donner.
-6. Récupère l'**ID du serveur** : Paramètres Discord → Avancés → **Mode développeur** ; puis clic droit sur le serveur → *Copier l'identifiant du serveur* (`GUILD_ID` dans `.env`). Grâce à lui, les commandes apparaissent immédiatement.
+1. Go to <https://discord.com/developers/applications> → **New Application** → name it (e.g. *LittlePrincess*).
+2. **Installation** tab: set **Install Link** to **None** (otherwise step 3 refuses to untick *Public Bot*).
+3. **Bot** tab:
+   - **Reset Token** → copy the token: it is the bot's password and goes into `DISCORD_TOKEN`. Never share it.
+   - Untick **Public Bot** (nobody else can add it).
+   - **Privileged Gateway Intents**: enable **Server Members Intent**, then **Save Changes**. Leave *Presence* and *Message Content* disabled: the bot only uses slash commands.
+4. Invite the bot with this link (replace `APPLICATION_ID` with the ID shown in **General Information**):
 
-## 2. Obtenir le token de l'API gtales.top
+   ```
+   https://discord.com/oauth2/authorize?client_id=APPLICATION_ID&permissions=309506198528&integration_type=0&scope=bot+applications.commands
+   ```
 
-L'API de [Guardian Tales TOP](https://gtales.top/api) demande un token (gratuit) pour les bots Discord :
-rejoins leur Discord (lien sur la page API) et ouvre un ticket. Mets ensuite le token dans `.env` (`GTALES_API_TOKEN`).
+   It grants: View Channels, Send Messages, Embed Links, Attach Files, Read Message History, Create Public Threads,
+   Send Messages in Threads and Manage Roles (level roles).
+5. On the server: **Server Settings → Roles**, drag the bot's role **above** the level roles it must give.
+   For the boss ping, enable *Allow anyone to @mention this role* on the chosen role (or use
+   `permissions=309506329600` to also grant *Mention Everyone*).
+6. Copy the **server ID** (Discord settings → Advanced → **Developer Mode**, then right-click the server →
+   *Copy Server ID*) into `GUILD_ID`. With it, commands show up instantly.
 
-- **Sans token**, le bot fonctionne avec une vingtaine de héros de démarrage aux stats **approximatives**.
-- **Dès que le token est ajouté** (puis le bot redémarré), il télécharge tous les héros, les met en cache
-  (`data/heroes_cache.json`, rafraîchi chaque semaine) et **convertit automatiquement** les héros de démarrage
-  déjà invoqués vers les vrais (même nom). `/bot sync` force une resynchronisation.
-- Le site demande de citer la source : c'est fait dans les fiches de héros, `/aide` et `/bot version`.
+## 2. Get a gtales.top API token
 
-## 3. Publier l'image Docker (GitHub)
+The [Guardian Tales TOP API](https://gtales.top/api) requires a (free) token for Discord bots: join their Discord
+(link on the API page) and open a ticket. Then set `GTALES_API_TOKEN`.
 
-L'image est construite automatiquement par **GitHub Actions** (`.github/workflows/docker.yml`) à chaque push sur
-`main`, pour PC/serveur (amd64) et ARM (arm64), et publiée sur `ghcr.io/shiro645/littleprincess:latest`.
+- **Without a token**, the bot runs with about twenty seed heroes with **approximate** stats.
+- **Once the token is set** (and the bot restarted), it downloads every hero, caches them
+  (`data/heroes_cache.json`, refreshed weekly) and **automatically converts** seed heroes players already own
+  into the real ones (matched by name). `/bot sync` forces a resync.
+- The site asks to credit the source: it is shown on hero cards, `/aide` and `/bot version`.
 
-1. Fusionne la branche de développement dans `main` (pull request) : l'action lance les tests puis construit l'image (≈ 5 min, onglet **Actions**).
-2. **Une seule fois** : rends l'image publique pour que le NAS puisse la télécharger sans identifiants.
-   GitHub → ton profil → **Packages** → `littleprincess` → **Package settings** → *Change visibility* → **Public**.
+## 3. Publish the Docker image (GitHub)
 
-## 4. Installer le bot sur le NAS
+**GitHub Actions** (`.github/workflows/docker.yml`) runs the tests on every push and builds the image on every
+push to `main`, for amd64 and arm64, published as `ghcr.io/shiro645/littleprincess:latest`.
 
-Il faut 3 fichiers dans un dossier du NAS (ex. `/volume1/docker/littleprincess`) : `docker-compose.yml`,
-`.env` (copié depuis `.env.example`) et c'est tout. Les dossiers `config/` et `data/` sont créés au démarrage.
+1. Merge the pull request into `main`: the workflow tests and builds the image (≈ 2–5 min, **Actions** tab).
+2. **Once**: make the package public so the NAS can pull it without credentials.
+   GitHub → your profile → **Packages** → `littleprincess` → **Package settings** → *Change visibility* → **Public**.
 
-### Remplir le fichier `.env`
+## 4. Install the bot on a NAS
 
-```env
-DISCORD_TOKEN=le-token-du-bot
-GUILD_ID=123456789012345678
-GTALES_API_TOKEN=le-token-gtales (facultatif au début)
-WATCHTOWER_TOKEN=une-longue-chaine-aleatoire
-```
+The stack has two containers: **littleprincess** (the bot) and **littleprincess-watchtower** (pulls new images
+when `/bot update` is used). The bot stores its files next to the compose file: `config/` (config.json) and
+`data/` (SQLite database + hero cache).
 
-### Option A — Synology (Container Manager)
+### Environment variables
 
-1. **File Station** : crée `docker/littleprincess` et dépose-y `docker-compose.yml` et `.env`.
-2. **Container Manager → Projet → Créer** : nom `littleprincess`, chemin = ce dossier, source = *utiliser le docker-compose.yml existant*.
-3. Valide : Container Manager télécharge les images et lance les 2 containers (`littleprincess` et `littleprincess-watchtower`).
-4. Logs : **Container → littleprincess → Journal**. Tu dois voir `Connecté en tant que …`.
+| Variable | Value |
+|---|---|
+| `DISCORD_TOKEN` | Bot token (step 1.3) |
+| `GUILD_ID` | Server ID (step 1.6) |
+| `GTALES_API_TOKEN` | gtales.top token (optional at first) |
+| `WATCHTOWER_TOKEN` | Any long random string. It must be identical to `WATCHTOWER_HTTP_API_TOKEN` of the Watchtower container |
 
-> Sur un autre NAS (QNAP, Unraid, Portainer…), le principe est le même : créer une « stack » à partir du `docker-compose.yml` avec le `.env` à côté.
+### Option A — NAS web interface (UGREEN UGOS Pro, Synology, QNAP…)
 
-### Option B — En ligne de commande (SSH)
+1. Install the **Docker** app (UGOS Pro: App Center; Synology: Container Manager).
+2. Create a folder for the bot, e.g. `docker/littleprincess`.
+3. **Docker → Project → Create**: name `littleprincess`, storage path = that folder, and paste `docker-compose.yml`.
+   Web editors make dot-files awkward, so instead of `env_file: .env` you can put the variables directly under
+   `environment:` of the `bot` service (and the same token under `WATCHTOWER_HTTP_API_TOKEN`).
+4. Deploy, then open **Container → littleprincess → Logs**: you should see `Logged in as …`.
+
+### Option B — Command line (SSH)
 
 ```bash
 mkdir -p /volume1/docker/littleprincess && cd /volume1/docker/littleprincess
-# récupère les deux fichiers depuis GitHub
 curl -O https://raw.githubusercontent.com/Shiro645/LittlePrincess/main/docker-compose.yml
 curl -o .env https://raw.githubusercontent.com/Shiro645/LittlePrincess/main/.env.example
-nano .env                      # remplis les valeurs
-docker compose up -d           # télécharge et démarre
-docker compose logs -f bot     # suivre les logs (Ctrl+C pour quitter)
+nano .env                      # fill in the values
+docker compose up -d           # pull and start
+docker compose logs -f bot     # follow the logs (Ctrl+C to quit)
 ```
 
-Commandes utiles :
-
-| Action | Commande |
+| Action | Command |
 |---|---|
-| Arrêter | `docker compose down` |
-| Redémarrer (après modif de `.env`) | `docker compose up -d` |
-| Après une modif de `config.json` à la main | `/bot recharger` sur Discord (ou `docker compose restart bot`) |
-| Mettre à jour à la main | `docker compose pull && docker compose up -d` |
+| Stop | `docker compose down` |
+| Apply a `.env` change | `docker compose up -d` |
+| Apply a manual `config.json` edit | **Reload** button on the config panel (or `/bot recharger`) |
+| Update manually | `docker compose pull && docker compose up -d` |
 
-### Construire l'image soi-même (sans GitHub)
+### Building the image yourself
 
-Clone le dépôt sur le NAS, puis dans `docker-compose.yml` remplace `image: …` par `build: .` et lance
-`docker compose up -d --build`. (`/bot update` ne fonctionne alors pas : mets à jour avec `git pull` + la même commande.)
+Clone the repository, replace `image: …` with `build: .` in `docker-compose.yml` and run
+`docker compose up -d --build`. `/bot update` does not work in that mode: update with `git pull` + the same command.
 
-## 5. Configurer le jeu (`config.json` + `/config`)
+## 5. Configure the game (configuration panel)
 
-Toutes les valeurs du jeu sont dans **un seul fichier** : `config/config.json` (taux, coûts, pitié, XP,
-récompenses, missions, boss, boutique, succès, salons, rôles…). Il est créé au premier démarrage et se
-modifie **directement depuis Discord** avec `/config` (staff uniquement) :
+Every game value lives in **one file**, `config/config.json`: rates, costs, pity, XP, rewards, missions, boss,
+shop, achievements, channels, roles… It is created on first start and edited **from Discord**:
 
-| Commande | Exemple |
-|---|---|
-| `/config voir [parametre]` | Sommaire, une section (`boss`) ou une valeur (`gacha.pity_hero`) avec sa description et sa valeur par défaut |
-| `/config modifier parametre valeur` | `gacha.pity_hero` → `60` · `boss.hour` → `20` · `gifts.enabled` → `false` · `shop.items.0.price.gold` → `15000` · `daily.rewards.6` → `{"gems": 800, "gold": 6000}` |
-| `/config reinitialiser parametre` | Revenir à la valeur par défaut (`tout` + `confirmer` pour tout réinitialiser) |
-| `/config supprimer parametre` | Retirer un élément de liste (`shop.items.3`) ou un palier (`leveling.level_roles.10`) |
-| `/config salon fonction [salon]` | Salon des annonces, des alertes staff, des niveaux, des succès, du boss, du wordle |
-| `/config salons liste action [salon]` | Salons autorisés pour les commandes, salons sans XP |
-| `/config staff action [role]` | Rôles qui ont accès à `/admin`, `/bot` et `/config` |
-| `/config role-boss [role]` · `/config role-niveau niveau [role]` | Rôle mentionné pour le boss, rôles automatiques par niveau |
-| `/config exporter` · `/config importer fichier` | Télécharger le `config.json`, le modifier sur ton PC, le renvoyer |
+1. A staff member runs **`/config panneau`** in a (preferably staff-only) channel. The bot posts the panel message.
+   It keeps working after restarts and is refreshed automatically after an update.
+2. Pick a section in the menu. An ephemeral browser opens:
+   - 🔘 **booleans** toggle with one click;
+   - #️⃣ 👥 **channels and roles** use Discord's channel/role pickers (no IDs to copy);
+   - ✏️ **other values** open a form pre-filled with the current value; 📁 sub-sections open in place;
+   - buttons: **Back**, **Edit as JSON**, **Add an item** (lists), **Add a tier** (level roles),
+     **Delete this item**, **Reset** (two clicks).
+3. The panel also has **Export** (download `config.json`) and **Reload file** (after a manual edit).
+   `/config importer` uploads a whole `config.json`.
 
-- Le paramètre s'écrit `section.cle` (les éléments de liste par leur numéro, à partir de 0) ; l'**autocomplétion** propose tous les chemins avec leur valeur actuelle.
-- Chaque modification est **vérifiée** (type, taux qui totalisent 100 %, fuseau horaire valide, boss complets…) puis **appliquée immédiatement**, sans redémarrage. L'ancienne version est gardée dans `config.json.bak` et la modification est tracée dans le salon staff.
-- Tu peux aussi éditer le fichier à la main sur le NAS, puis `/bot recharger`. S'il contient une erreur, le bot démarre avec les valeurs par défaut et prévient le staff.
-- Lors d'une mise à jour du bot, les **nouvelles options** sont ajoutées automatiquement : ta config n'est jamais écrasée.
-- Si tu avais déjà un `config.yaml` (v1.0.0), il est converti automatiquement en `config.json` au démarrage (l'ancien fichier est renommé `config.yaml.migre`).
-- Les **secrets** (token Discord, token API, mot de passe Watchtower) restent dans `.env` et ne sont **pas** modifiables depuis Discord : un token affiché dans un salon serait compromis.
+Every change is **validated** (types, rates summing to 100 %, valid timezone, complete bosses, unique ids…), then
+**applied immediately** without a restart. The previous version is kept in `config.json.bak` and the change is
+logged in the staff channel. If the file is broken by hand, the bot starts with default values and warns the staff.
+New options added by an update are merged in automatically; an old `config.yaml` (v1.0.0) is converted once.
 
-Premiers réglages conseillés, juste après l'installation :
+Secrets (Discord token, API token, Watchtower token) stay in environment variables and are deliberately **not**
+editable from Discord.
 
-```
-/config staff action:Ajouter role:@Officier
-/config salon fonction:Annonces des nouveautés salon:#annonces-bot
-/config salon fonction:Alertes du staff salon:#staff
-/config salon fonction:Boss du samedi salon:#boss
-/config role-boss role:@Raid
-/config role-niveau niveau:10 role:@Gardien
-```
+Setting descriptions shown in the panel live in `bot/data/config_help.json` (in French, since staff read them).
 
-## 6. Mettre à jour le bot (`/bot update`)
+## 6. Update the bot (`/bot update`)
 
-1. Le code est modifié (par exemple par Claude) et fusionné dans `main` : GitHub construit la nouvelle image.
-2. Le bot vérifie chaque jour s'il existe une nouvelle version et **prévient le staff** dans `channels.admin`.
-3. Un membre du staff tape **`/bot update`** : Watchtower télécharge la nouvelle image et redémarre le bot.
-4. Au redémarrage, le bot **annonce les nouveautés** (section du `CHANGELOG.md`) dans `channels.announcements`.
+1. Changes are merged into `main`; GitHub builds the new image.
+2. The bot checks for a new version daily and **warns the staff** in `channels.admin`.
+3. A staff member runs **`/bot update`**: Watchtower pulls the new image and restarts the bot.
+4. On restart, the bot **announces the changes** (the matching `CHANGELOG.md` section) in `channels.announcements`.
 
-Pour publier une version : augmenter `__version__` dans `bot/__init__.py` et ajouter une section en haut de `CHANGELOG.md`.
+To release a version: bump `__version__` in `bot/__init__.py` and add a section at the top of `CHANGELOG.md`.
+Changelog entries are written in French because they are posted to players.
 
-> Watchtower a besoin d'accéder au socket Docker du NAS (`/var/run/docker.sock`) : il ne met à jour **que** le
-> container du bot (label `watchtower.enable`), et **uniquement** quand `/bot update` le demande avec le
-> `WATCHTOWER_TOKEN`. Le projet Watchtower d'origine n'étant plus maintenu, on utilise le fork
-> [`nickfedor/watchtower`](https://github.com/nicholas-fedor/watchtower).
+> Watchtower needs the NAS Docker socket (`/var/run/docker.sock`). It only updates the bot container (label
+> `watchtower.enable`) and only when `/bot update` asks for it with `WATCHTOWER_TOKEN`. The original Watchtower
+> project is no longer maintained, so the stack uses the [`nickfedor/watchtower`](https://github.com/nicholas-fedor/watchtower) fork.
 
 ---
 
-## Commandes
+## Commands
 
-| Commande | Description |
+Slash commands are in French (they are what players type).
+
+| Command | Description |
 |---|---|
-| `/aide` | Liste des commandes |
-| `/profil [membre]` | Niveau, monnaies, collection, équipe |
-| `/classement <catégorie>` | Niveau, collection, duels, dummy, boss |
-| `/invoquer <bannière> <x1/x10> [ticket]` | Invocations |
-| `/bannieres` | Bannières actuelles, taux, ta pitié |
-| `/heros liste·info·ameliorer` | Tes héros |
-| `/arme liste·info·equiper·retirer·ameliorer` | Tes armes |
-| `/team voir·definir` | Ton équipe (le 1er = leader) |
-| `/daily` · `/missions` | Récompense du jour, missions |
-| `/wordle deviner·classement` | Héros du jour |
-| `/colisee defier·stats` | Duels avec mise |
-| `/boss info·solo·classement` | Boss du samedi |
-| `/dummy tester·classement` | Mannequin d'entraînement |
-| `/boutique voir·acheter` · `/donner` | Boutique et dons |
-| `/succes` · `/titre` | Succès et titres |
-| `/config voir·modifier·reinitialiser·supprimer·salon·salons·staff·role-boss·role-niveau·exporter·importer` | **Staff** : configuration du jeu |
-| `/bot version·verifier·update·sync·commandes·recharger` | **Staff** : gestion du bot |
-| `/admin donner·retirer·heros·reset·boss-lancer·boss-terminer·annonce` | **Staff** : gestion des joueurs |
+| `/aide` | Command list |
+| `/profil [membre]` | Level, currencies, collection, team |
+| `/classement <catégorie>` | Level, collection, duels, dummy, boss |
+| `/invoquer <bannière> <x1/x10> [ticket]` | Summon |
+| `/bannieres` | Current banners, rates, pity |
+| `/heros liste·info·ameliorer` | Heroes |
+| `/arme liste·info·equiper·retirer·ameliorer` | Weapons |
+| `/team voir·definir` | Team (first hero = leader) |
+| `/daily` · `/missions` | Daily reward, missions |
+| `/wordle deviner·classement` | Hero of the day |
+| `/colisee defier·stats` | Duels with bets |
+| `/boss info·solo·classement` | Saturday boss |
+| `/dummy tester·classement` | Training dummy |
+| `/boutique voir·acheter` · `/donner` | Shop and gifts |
+| `/succes` · `/titre` | Achievements and titles |
+| `/config panneau·exporter·importer` | **Staff**: configuration panel |
+| `/bot version·verifier·update·sync·commandes·recharger` | **Staff**: bot management |
+| `/admin donner·retirer·heros·reset·boss-lancer·boss-terminer·annonce` | **Staff**: player management |
 
-## Règles du jeu
+## Game rules
 
-- **Stats** : celles de l'API correspondent à un héros niveau 100, 5★. Un héros niveau L avec E étoiles a
-  `stat × facteur_niveau(L) × facteur_étoiles(E)` (de 12 % au niveau 1 / 1★ à 100 %).
-- **Combat** : chaque tour, chaque héros attaque ou lance sa compétence d'arme (recharge en tours). Les compétences
-  infligent des états (*À terre*, *Projeté*, *Blessé*) qui déclenchent les **compétences de chaîne** des alliés
-  (combo : +10 % par maillon). Avantage élémentaire ×1,3 (Feu > Terre > Eau > Feu, Lumière ⇄ Ténèbres).
-  Les tanks attirent les coups, les soutiens soignent, les buffs d'équipe s'appliquent (celui du leader ×1,5).
-- **Boss** : chaque participant ajoute des PV au boss selon la puissance de son équipe (mode `adaptive`) ; le boss
-  inflige des dégâts en % des PV des héros. Actions par tour : ⚔️ Attaque, ✨ Compétence, 🛡️ Garde (−50 % de dégâts).
-  Récompenses : participation + bonus de rang aux dégâts + bonus si le boss est vaincu, distribuées dimanche soir.
+- **Stats**: API stats are for a level 100, 5★ hero. A level L hero with S stars has
+  `stat × level_factor(L) × star_factor(S)` (from 12 % at level 1 / 1★ up to 100 %).
+- **Combat**: each round, every hero attacks or uses their weapon skill (cooldown in rounds). Skills apply states
+  (*Downed*, *Airborne*, *Injured*) that trigger allies' **chain skills** (+10 % per chain link). Element
+  advantage ×1.3 (Fire > Earth > Water > Fire, Light ⇄ Dark). Tanks draw aggro, supports heal, party buffs apply
+  (the leader's ×1.5).
+- **Boss**: each participant adds HP to the boss based on their team's strength (`adaptive` mode); the boss deals
+  damage as a % of heroes' HP. Actions per turn: ⚔️ Attack, ✨ Skill, 🛡️ Guard (−50 % damage). Rewards:
+  participation + damage rank bonus + kill bonus, handed out on Sunday night.
 
-## Sauvegarde
+## Backups
 
-Tout l'état du jeu est dans le dossier `data/` (fichier `littleprincess.db`). Pour sauvegarder : copier ce dossier
-(idéalement bot arrêté, ou avec la tâche de sauvegarde du NAS). `config/` contient ta configuration.
+All game state is in `data/` (`littleprincess.db`). Back up that folder (ideally with the bot stopped, or with the
+NAS backup task). `config/` holds the configuration.
 
-## Dépannage
+## Troubleshooting
 
-| Problème | Solution |
+| Problem | Fix |
 |---|---|
-| `PrivilegedIntentsRequired` dans les logs | Active **Server Members Intent** (étape 1.3). |
-| Les commandes `/` n'apparaissent pas | Vérifie `GUILD_ID` ; réinvite le bot avec le scope `applications.commands`. |
-| Les commandes d'un ancien bot apparaissent | Même application Discord : le bot les supprime au démarrage (ou `/bot commandes`), puis Ctrl+R dans Discord. Autre bot encore sur le serveur : expulse-le. |
-| Les rôles de niveau ne sont pas donnés | Permission *Gérer les rôles* + rôle du bot au-dessus des rôles de niveau. |
-| `/bot update` : « Watchtower injoignable » | Le container `littleprincess-watchtower` doit tourner (même `docker-compose.yml`). |
-| `/bot update` : HTTP 401 | `WATCHTOWER_TOKEN` différent entre le bot et Watchtower : relance `docker compose up -d`. |
-| `denied` en téléchargeant l'image | L'image GHCR n'est pas publique (étape 3.2). |
-| « données provisoires » sur les héros | Ajoute `GTALES_API_TOKEN` dans `.env` puis `docker compose up -d`. |
+| `PrivilegedIntentsRequired` in the logs | Enable **Server Members Intent** and click **Save Changes** (step 1.3). |
+| `invalid literal for int()` | `GUILD_ID` was not replaced with the server ID. |
+| Slash commands don't show up | Check `GUILD_ID`; re-invite the bot with the `applications.commands` scope. |
+| An old bot's commands show up | Same Discord application: the bot removes them on startup (or `/bot commandes`), then Ctrl+R in Discord. Another bot still on the server: kick it. |
+| Level roles are not given | *Manage Roles* permission + bot role above the level roles. |
+| `/bot update`: "Watchtower injoignable" | The `littleprincess-watchtower` container must be running (same compose project). |
+| `/bot update`: HTTP 401 | `WATCHTOWER_TOKEN` differs between the bot and Watchtower. |
+| `denied` when pulling the image | The GHCR package is not public (step 3.2). |
+| "données provisoires" on heroes | Set `GTALES_API_TOKEN` and restart. |
 
-## Développement
+## Development
 
 ```bash
 pip install -r requirements.txt
-python -m unittest discover -s tests -v     # tests
-python -m bot                               # lancer le bot (variables de .env exportées)
+python -m unittest discover -s tests -v     # tests (Discord tests need discord.py)
+python -m bot                               # run the bot (with the environment variables exported)
 ```
 
-Structure : `bot/game/` (règles pures : combat, gacha, stats), `bot/services/` (base de données),
-`bot/cogs/` (commandes Discord), `config/config.json` (valeurs par défaut),
-`bot/data/config_help.json` (description de chaque paramètre, affichée par `/config voir`), `tests/`.
+Layout:
+
+| Path | Content |
+|---|---|
+| `bot/game/` | Pure game rules: combat engine, gacha, stats, wordle, simulations |
+| `bot/services/` | Database-backed services: players, collection, progress, leveling |
+| `bot/cogs/` | Discord commands |
+| `bot/ui/` | Embeds, paginators, battle display, configuration panel |
+| `bot/config.py` | config.json loading, merging, paths, validation |
+| `config/config.json` | Default configuration |
+| `bot/data/` | Seed heroes and setting descriptions |
+| `tests/` | Unit tests + Discord smoke tests |
+
+Conventions: code, comments, logs and docs in English; everything players and staff see on Discord in French.

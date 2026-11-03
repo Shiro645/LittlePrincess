@@ -1,4 +1,4 @@
-"""Vues réutilisables : pagination, confirmation."""
+"""Reusable views: pagination."""
 
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ class Paginator(discord.ui.View):
 
 
 async def send_pages(interaction: discord.Interaction, pages: list[discord.Embed], ephemeral: bool = False) -> None:
-    """Envoie une ou plusieurs pages (avec boutons si plusieurs)."""
+    """Send one or more pages (with buttons if there are several)."""
     if len(pages) == 1:
         if interaction.response.is_done():
             await interaction.followup.send(embed=pages[0], ephemeral=ephemeral)

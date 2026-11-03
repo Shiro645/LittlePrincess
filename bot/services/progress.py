@@ -1,4 +1,4 @@
-"""Statistiques des joueurs, missions quotidiennes/hebdomadaires et succès."""
+"""Player stats, daily/weekly missions and achievements."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from .. import timeutil
 from .context import AppContext
 from .players import credit_sync, ensure_sync, merge_rewards
 
-# Événement -> compteur incrémenté (pour les succès)
+# Event -> incremented counter (for achievements)
 EVENT_STATS = {
     "summon": "summons",
     "three_star": "three_star_pulled",
@@ -44,7 +44,7 @@ def _sample(pool: list, count: int, seed: str) -> list:
 
 
 def check_achievements_sync(conn: sqlite3.Connection, cfg, user_id: int, stat: str, value: int) -> list[dict]:
-    """Débloque les succès liés à `stat` atteints. Crédite les récompenses."""
+    """Unlock the achievements reached for `stat` and credit their rewards."""
     unlocked: list[dict] = []
     for ach in cfg.achievements:
         if ach["stat"] != stat or value < int(ach["target"]):
@@ -85,7 +85,7 @@ class Progress:
     def cfg(self):
         return self.app.cfg
 
-    # -- missions actives -----------------------------------------------------
+    # -- active missions -----------------------------------------------------
 
     def daily_missions(self, day: Optional[str] = None) -> list[dict]:
         day = day or timeutil.day_key(self.cfg)
@@ -101,10 +101,10 @@ class Progress:
             (m, f"w:{week}", True) for m in self.weekly_missions(week)
         ]
 
-    # -- événements -----------------------------------------------------------
+    # -- events -------------------------------------------------------------
 
     def record_sync(self, conn: sqlite3.Connection, user_id: int, event: str, amount: int = 1) -> list[dict]:
-        """À appeler dans une transaction existante."""
+        """Call inside an existing transaction."""
         unlocked: list[dict] = []
         stat = EVENT_STATS.get(event)
         if stat:
@@ -152,7 +152,7 @@ class Progress:
         return states
 
     async def claim_missions(self, user_id: int) -> tuple[dict, list[dict]]:
-        """Récupère les récompenses des missions terminées. Retourne (total, missions)."""
+        """Claim the rewards of completed missions. Returns (total, missions)."""
         active = self._active()
 
         def _tx(conn):
@@ -172,7 +172,7 @@ class Progress:
         claimed = await self.app.db.transaction(_tx)
         return merge_rewards(*(m.get("reward") for m in claimed)), claimed
 
-    # -- succès ---------------------------------------------------------------
+    # -- achievements ---------------------------------------------------------------
 
     async def unlocked_achievements(self, user_id: int) -> set[str]:
         rows = await self.app.db.fetchall("SELECT ach_id FROM achievements WHERE user_id = ?", (user_id,))
